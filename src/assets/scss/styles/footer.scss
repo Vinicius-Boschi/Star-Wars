@@ -1,0 +1,39 @@
+.footer {
+    background-color: $dark-blue;
+    padding: 3rem;
+
+    h1 {
+        color: $white;
+        text-align: center;
+    }
+
+    a {
+        position: relative;
+        transition: all .3s linear;
+        cursor: pointer;
+        text-decoration: none;
+        color: inherit;
+    
+        &::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            height: 2px;
+            background-color: $orange;
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform .5s;
+        }
+        
+        &:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+    
+        &:hover {
+            color: $orange;
+        }
+    }
+}

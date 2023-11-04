@@ -1,0 +1,38 @@
+.main {
+    ul {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        justify-items: center;
+        gap: 2rem;
+        padding: 2rem;
+        width: calc(100% - 100px);
+    }
+
+    .main__ul > .main__lists:last-child::after {
+        content: " +";
+    }
+
+    .none {
+        display: none;
+    }
+
+    li {
+        width: 100%;
+        border: 2px solid $white;
+        border-radius: 10px 10px 0 0;
+    }
+
+    img {
+        width: 100%;
+        border-radius: 10px 10px 0 0;
+    }
+
+    span {
+        background-color: $white;
+        height: 3rem;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
