@@ -1,12 +1,12 @@
 <template>
     <header class="header">
         <nav>
-            <router-link to="/"><img src="../assets/logo.png" alt="Star Wars"/></router-link>
+            <img src="../assets/logo.png" alt="Star Wars"/>
             <ul>
-                <li><router-link to="/">Personagens</router-link></li>
-                <li><router-link to="/">Filmes</router-link></li>
-                <li><router-link to="/">Naves Espaciais</router-link></li>
-                <li><router-link to="/">Veiculos</router-link></li>
+                <li>Personagens</li>
+                <li>Filmes</li>
+                <li>Naves Espaciais</li>
+                <li>Veiculos</li>
             </ul>
         </nav>
     </header>

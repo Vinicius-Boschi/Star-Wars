@@ -1,6 +1,14 @@
 .footer {
-    background-color: $dark-blue;
-    padding: 3rem;
+    padding: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #FFF;
+    background-color: $black;
+    height: 10rem;
+    background-image: url(https://static-mh.content.disney.io/starwars/assets/footer/vader_2-86e8fdb4e26d.jpg);
+    background-position: center top;
+    background-repeat: no-repeat;
 
     h1 {
         color: $white;

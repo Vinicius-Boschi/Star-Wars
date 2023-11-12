@@ -1,76 +1,32 @@
 <template>
-    <div>
-        <main class="main">
-            <ul class="main__ul">
-                <li class="main__list">
-                    <img src="https://printler.com/media/photo/146602.jpg" alt="">
-                    <div>
-                        <span>Darth Vader</span>
-                    </div>
-                </li>
-                <li class="main__list">
-                    <img src="https://printler.com/media/photo/146602.jpg" alt="">
-                    <div>
-                        <span>Darth Vader</span>
-                    </div>
-                </li>
-                <li class="main__list">
-                    <img src="https://printler.com/media/photo/146602.jpg" alt="">
-                    <div>
-                        <span>Darth Vader</span>
-                    </div>
-                </li>
-                <li class="main__list">
-                    <img src="https://printler.com/media/photo/146602.jpg" alt="">
-                    <div>
-                        <span>Darth Vader</span>
-                    </div>
-                </li>
-                <li class="main__list">
-                    <img src="https://printler.com/media/photo/146602.jpg" alt="">
-                    <div>
-                        <span>Darth Vader</span>
-                    </div>
-                </li>
-                <li class="main__list">
-                    <img src="https://printler.com/media/photo/146602.jpg" alt="">
-                    <div>
-                        <span>Darth Vader</span>
-                    </div>
-                </li>
-            </ul>
-        </main>
-    </div>
+  <div class="container" id="home">
+    <Characters
+      :apiUrl="apiUrl"
+      @setHeroesUrl="setHeroesUrl"
+      :imageBaseUrl="imageBaseUrl"
+    />
+  </div>
 </template>
 
-
 <script>
+import Characters from "./Characters.vue";
+
 export default {
-    name: 'Main',
-
-    morelist(){
-        var cont = 0;
-        var items = document.querySelectorAll(".main__list");
-        var itemsNone = document.querySelectorAll(".none");
-
-        if (itemsNone.length > 0) {
-            items.forEach(item => item.classList.remove("none"));
-        }
-        else {
-            items.forEach(item => {
-            if (cont < 4 || cont == items.length-1) {
-            }
-            else{
-                item.classList.add("none");
-            }
-            cont++;
-            });
-        }
+  name: "Main",
+  props: ["imageBaseUrl"],
+  components: {
+    Characters,
+  },
+  data() {
+    return {
+      apiUrl: "https://swapi.dev/api/",
+      heroesUrl: "",
     }
+  },
+  methods: {
+    setHeroesUrl(url) {
+      this.heroesUrl = url
+    },
+  },
 }
 </script>
-
-<style lang="scss">
-    @import '../assets/scss/variables.scss';
-    @import '../assets/scss/styles/main.scss';
-</style>
