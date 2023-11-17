@@ -1,8 +1,16 @@
 <template>
   <div class="search">
-    <input v-model="searchQuery" type="text" placeholder="Pesquise pelo nome do personagem" />
+    <input
+      v-model="searchQuery"
+      type="text"
+      placeholder="Pesquise pelo nome do personagem"
+    />
     <div class="pagination">
-      <button class="pagination__button" @click="prevPage" :disabled="currentPage === 1">
+      <button
+        class="pagination__button"
+        @click="prevPage"
+        :disabled="currentPage === 1"
+      >
         <svg
           stroke="currentColor"
           fill="currentColor"
@@ -16,8 +24,19 @@
           <path d="M17.77 3.77L16 2 6 12l10 10 1.77-1.77L9.54 12z"></path>
         </svg>
       </button>
-      <button v-for="page in totalPages" :key="page" :class="{ active: page === currentPage}" @click="goToPage(page)">{{ page }}</button>
-      <button class="pagination__button" @click="nextPage" :disabled="currentPage === totalPages">
+      <button
+        v-for="page in totalPages"
+        :key="page"
+        :class="{ active: page === currentPage }"
+        @click="goToPage(page)"
+      >
+        {{ page }}
+      </button>
+      <button
+        class="pagination__button"
+        @click="nextPage"
+        :disabled="currentPage === totalPages"
+      >
         <svg
           stroke="currentColor"
           fill="currentColor"
@@ -32,67 +51,48 @@
         </svg>
       </button>
     </div>
-    <!-- <div class="list">
-    <ul>
-      <li v-for="character in characters" :key="character.name">
-        <span>{{ character.name }}</span>
-      </li>
-    </ul>
-  </div> -->
   </div>
 </template>
 
 <script>
 export default {
+  props: {
+    currentPage: Number
+  },
   data() {
     return {
-        searchQuery: '',
-        currentPage: 1,
-        totalPages: 9,
-        characters: []
+      searchQuery: "",
+      totalPages: 9,
     }
   },
   watch: {
-    searchQuery: 'searchCharacters',
-    currentPage: 'searchCharacters',
+    searchQuery: "searchCharacters",
   },
   methods: {
-    async searchCharacters() {
-        try {
-            const response = await fetch(
-            `https://swapi.dev/api/people/?search=${this.searchQuery}&page=${this.currentPage}`
-            )
-            const data = await response.json()
-
-            this.characters = []
-
-            this.characters = data.results
-            this.totalPages = Math.ceil(data.count / 10)
-        } catch (error) {
-            console.error('Failed to search the characters', error)
-        }
+    searchCharacters() {
+      this.$emit("search-characters", {
+        searchQuery: this.searchQuery,
+        currentPage: 1,
+      })
     },
-    async prevPage() {
-        if (this.currentPage > 1) {
-            this.currentPage--
-            await this.searchCharacters()
-        }
+    nextPage() {
+      if (this.currentPage < this.totalPages) {
+        this.$emit("change-page", this.currentPage + 1)
+      }
     },
-    async nextPage() {
-        if (this.currentPage < this.totalPages) {
-            this.currentPage++
-            await this.searchCharacters()
-        }
+    prevPage() {
+      if (this.currentPage > 1) {
+        this.$emit("change-page", this.currentPage - 1)
+      }
     },
-    async goToPage(page) {
-        this.currentPage = page
-        await this.searchCharacters()
+    goToPage(page) {
+      this.$emit("change-page", page)
     },
   },
 }
 </script>
 
 <style lang="scss">
-    @import "../assets/scss/variables.scss";
-    @import "../assets/scss/styles/search.scss";
+  @import "../assets/scss/variables.scss";
+  @import "../assets/scss/styles/search.scss";
 </style>

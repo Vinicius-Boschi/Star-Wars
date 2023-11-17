@@ -1,0 +1,9 @@
+body {
+    background-image: url("https://github-production-user-asset-6210df.s3.amazonaws.com/74377158/280483955-11005287-0407-4608-9c7c-e237c1cd341c.jpg");
+    width: 100vw;
+    overflow-x: hidden;
+    background-size: max(100vw, 100vh);
+    background-position: 0 50%;
+    background-attachment: fixed;
+    font-family: $font;
+}
