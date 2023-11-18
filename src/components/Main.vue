@@ -5,14 +5,11 @@
       @searchedCharacter="handleSearchCharacter"
       :imageBaseUrl="imageBaseUrl"
     />
-    <!-- <div v-if="searchedCharacter">
-      <h2>{{ searchedCharacter.name }}</h2>
-    </div> -->
   </div>
 </template>
 
 <script>
-import Characters from "./Characters.vue";
+import Characters from "./Characters.vue"
 
 export default {
   name: "Main",
@@ -24,12 +21,12 @@ export default {
     return {
       apiUrl: "https://swapi.dev/api/",
       searchedCharacter: null,
-    };
+    }
   },
   methods: {
     handleSearchCharacter(character) {
-      this.searchedCharacter = character;
+      this.searchedCharacter = character
     },
   },
-};
+}
 </script>
