@@ -36,4 +36,13 @@
         color: $white;
         text-align: center;
     }
+
+    .loading {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 30vh;
+        color: #FFF;
+        font-size: 26pt;
+    }
 }

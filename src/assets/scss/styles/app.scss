@@ -1,3 +1,8 @@
+#app {
+    position: relative;
+    min-height: 100vh;
+}
+
 body {
     background-image: url("https://github-production-user-asset-6210df.s3.amazonaws.com/74377158/280483955-11005287-0407-4608-9c7c-e237c1cd341c.jpg");
     width: 100vw;
@@ -6,4 +11,18 @@ body {
     background-position: 0 50%;
     background-attachment: fixed;
     font-family: $font;
+}
+
+::-webkit-scrollbar {
+    width: 12px;
+    background-color: $dark-blue;
+}
+
+::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px $dark-blue; 
+}
+
+::-webkit-scrollbar-thumb {
+    background: $orange; 
+    border-radius: 5px;
 }

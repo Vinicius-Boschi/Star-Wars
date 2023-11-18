@@ -11,7 +11,7 @@
         @click="prevPage"
         :disabled="currentPage === 1"
       >
-        <svg
+      <svg
           stroke="currentColor"
           fill="currentColor"
           stroke-width="0"
@@ -37,7 +37,7 @@
         @click="nextPage"
         :disabled="currentPage === totalPages"
       >
-        <svg
+      <svg
           stroke="currentColor"
           fill="currentColor"
           stroke-width="0"
@@ -55,44 +55,58 @@
 </template>
 
 <script>
+import { searchedCharacters } from "../services/searchService";
+
 export default {
   props: {
-    currentPage: Number
+    currentPage: Number,
+    totalPages: Number,
   },
   data() {
     return {
       searchQuery: "",
-      totalPages: 9,
-    }
+    };
   },
   watch: {
-    searchQuery: "searchCharacters",
+    searchQuery: "searchedCharacters",
   },
   methods: {
-    searchCharacters() {
-      this.$emit("search-characters", {
-        searchQuery: this.searchQuery,
-        currentPage: 1,
-      })
+    async searchedCharacters() {
+      const results = await searchedCharacters(
+        this.searchQuery,
+        this.currentPage
+      );
+
+      if (results.length > 0) {
+        results.forEach((character, index) => {
+          character.id = index + 1;
+        });
+        this.searchedCharacter = results[0];
+      }
+
+      this.$nextTick(() => {
+        this.$emit("searchedCharacter", this.searchedCharacter);
+      });
     },
+
     nextPage() {
       if (this.currentPage < this.totalPages) {
-        this.$emit("change-page", this.currentPage + 1)
+        this.$emit("changePage", this.currentPage + 1);
       }
     },
     prevPage() {
       if (this.currentPage > 1) {
-        this.$emit("change-page", this.currentPage - 1)
+        this.$emit("changePage", this.currentPage - 1);
       }
     },
     goToPage(page) {
-      this.$emit("change-page", page)
+      this.$emit("changePage", page);
     },
   },
-}
+};
 </script>
 
 <style lang="scss">
-  @import "../assets/scss/variables.scss";
-  @import "../assets/scss/styles/search.scss";
+@import "../assets/scss/variables.scss";
+@import "../assets/scss/styles/search.scss";
 </style>

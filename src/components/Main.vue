@@ -2,9 +2,12 @@
   <div class="container" id="home">
     <Characters
       :apiUrl="apiUrl"
-      @setHeroesUrl="setHeroesUrl"
+      @searchedCharacter="handleSearchCharacter"
       :imageBaseUrl="imageBaseUrl"
     />
+    <!-- <div v-if="searchedCharacter">
+      <h2>{{ searchedCharacter.name }}</h2>
+    </div> -->
   </div>
 </template>
 
@@ -20,13 +23,13 @@ export default {
   data() {
     return {
       apiUrl: "https://swapi.dev/api/",
-      heroesUrl: "",
-    }
+      searchedCharacter: null,
+    };
   },
   methods: {
-    setHeroesUrl(url) {
-      this.heroesUrl = url
+    handleSearchCharacter(character) {
+      this.searchedCharacter = character;
     },
   },
-}
+};
 </script>
