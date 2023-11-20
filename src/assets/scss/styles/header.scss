@@ -8,19 +8,23 @@
     }
     
     img {
-        height: 70px;
+        height: 80px;
     }   
     
-    ul {
+    div {
         display: flex;
+        align-items: center;
     }
     
-    li {
+    a {
         position: relative;
         padding: 1rem 1rem;
         letter-spacing: .1rem;
         transition: all .3s linear;
         cursor: pointer;
+        text-decoration: none;
+        font-size: 1.1rem;
+        color: $white;
     
         &::after {
             content: '';

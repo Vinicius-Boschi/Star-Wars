@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import Characters from "./Characters.vue"
+import Characters from "../views/Characters.vue"
 
 export default {
   name: "Main",
