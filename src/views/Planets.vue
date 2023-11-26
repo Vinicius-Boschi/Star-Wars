@@ -1,15 +1,13 @@
 <template>
-    <div>
-        <h1>Planets</h1>
-    </div>
+  <div>
+    <h1>Planets</h1>
+  </div>
 </template>
 
 <script>
-    export default {
-
-    }
+  export default {
+    name: "Planets",
+  }
 </script>
 
-<style>
-
-</style>
+<style></style>

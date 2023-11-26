@@ -1,33 +1,41 @@
-<!-- Header.vue -->
 <template>
   <header class="header">
     <nav>
       <img src="../assets/logo.png" alt="Star Wars" />
       <ul>
         <li>
-          <router-link :to="page.path" v-for="page in pages" :key="page.name">
-          {{ page.name }}
-        </router-link>
+          <router-link to="/">Home</router-link>
+          <router-link
+            v-for="(view, index) in getViews()"
+            :key="`route-link-${index}`"
+            :to="`/${view.toLowerCase()}`"
+          >
+            {{ view }}
+            <span v-if="index !== getViews().length - 1"></span>
+          </router-link>
         </li>
-        
+        <router-view />
       </ul>
     </nav>
-    <!-- <router-view /> -->
   </header>
 </template>
 
-<script setup>
-// O Vite Pages adicionará automaticamente a variável $page à instância do Vue
-import { ref, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
-import { routes } from '../router'; // Importa as rotas criadas dinamicamente
+<script>
+const context = import.meta.glob("../views/*.vue")
 
-const pages = ref([]);
+export default {
+  name: "Header",
 
-onMounted(() => {
-  const route = useRoute();
-  pages.value = routes;
-});
+  methods: {
+    getViews() {
+      const views = Object.keys(context)
+        .map((item) => item.match(/\.\/views\/(.+)\.vue$/)[1])
+        .filter((item) => item !== "Home")
+
+      return views
+    },
+  },
+};
 </script>
 
 <style lang="scss">

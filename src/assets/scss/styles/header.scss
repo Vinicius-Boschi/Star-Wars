@@ -11,9 +11,13 @@
         height: 80px;
     }   
     
-    div {
+    ul {
         display: flex;
         align-items: center;
+    }
+
+    li {
+        list-style: none;
     }
     
     a {
@@ -23,6 +27,7 @@
         transition: all .3s linear;
         cursor: pointer;
         text-decoration: none;
+        text-transform: capitalize;
         font-size: 1.1rem;
         color: $white;
     

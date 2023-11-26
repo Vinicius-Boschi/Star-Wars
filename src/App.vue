@@ -1,15 +1,17 @@
 <template>
-  <Preloader :preloader="logo_src" :alt="name" />
-  <Header />
-  <Main />
-  <Footer />
+  <div>
+    <Preloader :preloader="logo_src" :alt="name" />
+    <Header />
+    <Main />
+    <Footer />
+  </div>
 </template>
 
 <script>
-  import Preloader from "./components/Preloader.vue"
-  import Header from "./components/Header.vue"
-  import Main from "./components/Main.vue"
-  import Footer from "./components/Footer.vue"
+import Preloader from "@/components/Preloader.vue"
+import Header from "./components/Header.vue"
+import Main from "./components/Main.vue"
+import Footer from "./components/Footer.vue"
 
 export default {
   name: "App",
@@ -30,7 +32,6 @@ export default {
   methods: {
     loadPreloader() {
       const preloader = document.querySelector(".preloader")
-
       window.addEventListener("load", () => {
         preloader.classList.add("hide-preloader")
       })
@@ -40,7 +41,7 @@ export default {
   mounted() {
     this.loadPreloader()
   },
-}
+};
 </script>
 
 <style lang="scss">

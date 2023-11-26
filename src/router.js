@@ -1,12 +1,32 @@
-import { defineAsyncComponent } from 'vue'
+import { createRouter, createWebHistory } from "vue-router"
+import Home from "./views/Home.vue"
 
-export const views = import.meta.glob('./views/*.vue')
-
-export const routes = Object.keys(views).map((path) => {
-  const name = path.match(/\.\/views\/(.*)\.vue$/)[1]
+const generateRoute = (componentName) => {
   return {
-    path: `/${name.toLowerCase()}`,
-    name: name,
-    component: defineAsyncComponent(() => import(path)),
+    path: `/${componentName.toLowerCase()}`,
+    name: componentName.toLowerCase(),
+    component: () => import(`./views/${componentName}.vue`),
   }
+}
+
+function loadRoutes() {
+  const context = import.meta.glob("./views/*.vue")
+  return Object.keys(context)
+    .map((fileName) => fileName.match(/\.\/views\/(.+)\.vue$/)[1]) // Extrai o nome do componente
+    .filter((componentName) => componentName !== "Home")
+    .map(generateRoute)
+}
+
+const router = createRouter({
+  history: createWebHistory(),
+  routes: [
+    {
+      path: "/",
+      name: "home",
+      component: Home,
+    },
+    ...loadRoutes(),
+  ],
 })
+
+export default router
