@@ -2,15 +2,14 @@
   <div>
     <Preloader :preloader="logo_src" :alt="name" />
     <Header />
-    <Main />
+    <router-view :apiUrl="apiUrl" />
     <Footer />
   </div>
 </template>
 
 <script>
-import Preloader from "@/components/Preloader.vue"
+import Preloader from "./components/Preloader.vue"
 import Header from "./components/Header.vue"
-import Main from "./components/Main.vue"
 import Footer from "./components/Footer.vue"
 
 export default {
@@ -18,7 +17,6 @@ export default {
   components: {
     Preloader,
     Header,
-    Main,
     Footer,
   },
 
@@ -26,7 +24,9 @@ export default {
     return {
       logo_src: "https://i.gifer.com/N7VV.gif",
       name: "Sabre de Luz",
-    }
+      apiUrl: "https://swapi.dev/api/",
+      searchedCharacter: null,
+    };
   },
 
   methods: {
@@ -35,6 +35,9 @@ export default {
       window.addEventListener("load", () => {
         preloader.classList.add("hide-preloader")
       })
+    },
+    handleSearchCharacter(character) {
+      this.searchedCharacter = character
     },
   },
 

@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import Search from "../components/Search.vue"
+import Search from "../components/Search.vue";
 
 export default {
   name: "Characters",
@@ -53,7 +53,7 @@ export default {
       currentPage: 1,
       totalPages: 9,
       searchedCharacter: null,
-    }
+    };
   },
   computed: {
     imageBaseUrl() {
@@ -64,27 +64,49 @@ export default {
     async fetchRequisition(pageNumber = this.currentPage) {
       this.loading = true
       this.heroes = []
+
+      if (!this.apiUrl) {
+        console.error("API URL is not defined.")
+        this.loading = false
+        return
+      }
       let req = new Request(
         `${this.currentUrl}${this.complementUrl}?page=${pageNumber}`
       )
 
+      let resp
+
       try {
-        const resp = await fetch(req)
-        const characters = await resp.json()
+        resp = await fetch(req)
 
-        this.totalPages = Math.ceil(characters.count / 10)
+        if (!resp.ok) {
+          throw new Error(`HTTP error! Status: ${resp.status}`)
+        }
 
-        if (characters.results) {
-          this.heroes = characters.results.map((hero) => {
-            hero.id = this.extractIdFromUrl(hero.url)
-            return hero
-          })
+        const contentType = resp.headers.get("content-type")
+        if (contentType && contentType.includes("application/json")) {
+          const characters = await resp.json()
+          this.totalPages = Math.ceil(characters.count / 10)
+
+          if (characters.results) {
+            this.heroes = characters.results.map((hero) => {
+              hero.id = this.extractIdFromUrl(hero.url)
+              return hero
+            })
+          }
+        } else {
+          console.error(
+            `Invalid content type. Expected JSON. Actual: ${contentType}`
+          )
         }
 
         this.searchedCharacter = null
         this.loading = false
       } catch (error) {
-        console.log("Error fetching characters", error)
+        console.error("Error fetching characters", error)
+        if (resp) {
+          console.log("Response:", await resp.text())
+        }
         this.loading = false
       }
     },
@@ -123,8 +145,14 @@ export default {
   },
 
   created() {
-    this.currentUrl = this.apiUrl
-    this.fetchRequisition(this.currentPage)
+    if (this.$props.apiUrl && typeof this.$props.apiUrl === "string") {
+      this.currentUrl = this.$props.apiUrl
+      this.fetchRequisition(this.currentPage)
+    } else {
+      console.error(
+        "this.$props.apiUrl não é uma string válida ou está indefinida."
+      )
+    }
   },
   watch: {
     currentPage(newPage) {

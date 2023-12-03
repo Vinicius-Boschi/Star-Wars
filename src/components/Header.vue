@@ -14,7 +14,6 @@
             <span v-if="index !== getViews().length - 1"></span>
           </router-link>
         </li>
-        <router-view />
       </ul>
     </nav>
   </header>
@@ -35,7 +34,7 @@ export default {
       return views
     },
   },
-};
+}
 </script>
 
 <style lang="scss">
