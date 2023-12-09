@@ -2,6 +2,7 @@
     position: relative;
     min-height: 100vh;
     font-family: $font;
+    margin-bottom: 40px;
 }
 
 body {
@@ -11,6 +12,7 @@ body {
     background-size: max(100vw, 100vh);
     background-position: 0 50%;
     background-attachment: fixed;
+    color: $white;
 }
 
 ::-webkit-scrollbar {

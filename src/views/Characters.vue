@@ -1,24 +1,7 @@
 <template>
   <div class="list">
-    <Search
-      :currentPage="currentPage"
-      :totalPages="totalPages"
-      @changePage="changePage"
-      @searchedCharacters="handleSearchedCharacters"
-    />
     <ul>
-      <li v-if="searchedCharacter">
-        <img
-          v-if="!loading && searchedCharacter"
-          id="image"
-          :src="getImageUrl(searchedCharacter.id)"
-          :alt="searchedCharacter.name"
-          :data-id="searchedCharacter.id"
-        />
-        <span>{{ searchedCharacter.name }}</span>
-      </li>
-
-      <li v-else v-for="(hero, index) in heroes" :key="index">
+      <li v-for="(hero, index) in heroes" :key="index">
         <img
           v-if="!loading && hero"
           id="image"
@@ -29,19 +12,14 @@
         <span>{{ hero.name }}</span>
       </li>
     </ul>
-    <div v-if="loading">Loading...</div>
+    <div v-if="loading" class="loading">Loading...</div>
   </div>
 </template>
 
 <script>
-import Search from "../components/Search.vue";
-
 export default {
   name: "Characters",
-  props: ["apiUrl"],
-  components: {
-    Search,
-  },
+  props: ["apiUrl", "currentPage"],
   data() {
     return {
       heroes: [],
@@ -50,10 +28,7 @@ export default {
       loading: true,
       error404:
         "https://i.pinimg.com/originals/c0/6c/9d/c06c9d63bda3f0a823aee1b2f47b0457.png",
-      currentPage: 1,
-      totalPages: 9,
-      searchedCharacter: null,
-    };
+    }
   },
   computed: {
     imageBaseUrl() {
@@ -62,6 +37,7 @@ export default {
   },
   methods: {
     async fetchRequisition(pageNumber = this.currentPage) {
+
       this.loading = true
       this.heroes = []
 
@@ -70,6 +46,7 @@ export default {
         this.loading = false
         return
       }
+
       let req = new Request(
         `${this.currentUrl}${this.complementUrl}?page=${pageNumber}`
       )
@@ -86,7 +63,7 @@ export default {
         const contentType = resp.headers.get("content-type")
         if (contentType && contentType.includes("application/json")) {
           const characters = await resp.json()
-          this.totalPages = Math.ceil(characters.count / 10)
+          this.updateTotalPages(Math.ceil(characters.count / 10))
 
           if (characters.results) {
             this.heroes = characters.results.map((hero) => {
@@ -100,7 +77,6 @@ export default {
           )
         }
 
-        this.searchedCharacter = null
         this.loading = false
       } catch (error) {
         console.error("Error fetching characters", error)
@@ -109,6 +85,10 @@ export default {
         }
         this.loading = false
       }
+    },
+
+    updateTotalPages(newTotalPages) {
+      this.totalPages = newTotalPages
     },
 
     getImageUrl(id) {
@@ -125,23 +105,6 @@ export default {
       const parts = url.split("/").filter((part) => !!part)
       return parts.pop()
     },
-
-    async handleSearchedCharacters(searchResults) {
-      if (searchResults && searchResults.length > 0) {
-        const firstResult = searchResults[0]
-        firstResult.id = this.extractIdFromUrl(firstResult.url)
-        this.searchedCharacter = firstResult
-      } else {
-        this.searchedCharacter = null
-      }
-    },
-
-    changePage(newPage) {
-      this.$nextTick(() => {
-        this.currentPage = newPage
-        this.fetchRequisition()
-      })
-    },
   },
 
   created() {
@@ -155,8 +118,11 @@ export default {
     }
   },
   watch: {
-    currentPage(newPage) {
-      this.fetchRequisition(newPage)
+    currentPage() {
+      this.fetchRequisition(this.currentPage)
+    },
+    totalPages(newTotalPages) {
+      this.totalPages = newTotalPages
     },
   },
 }

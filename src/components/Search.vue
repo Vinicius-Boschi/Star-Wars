@@ -58,6 +58,7 @@
 import { searchedCharacters } from "../services/searchService"
 
 export default {
+  name: "Search",
   props: {
     currentPage: Number,
     totalPages: Number,
@@ -75,19 +76,17 @@ export default {
       const results = await searchedCharacters(
         this.searchQuery,
         this.currentPage
-      )
-
+      );
       this.$emit("searchedCharacters", results)
-    },
-
-    nextPage() {
-      if (this.currentPage < this.totalPages) {
-        this.$emit("changePage", this.currentPage + 1)
-      }
     },
     prevPage() {
       if (this.currentPage > 1) {
         this.$emit("changePage", this.currentPage - 1)
+      }
+    },
+    nextPage() {
+      if (this.currentPage < this.totalPages) {
+        this.$emit("changePage", this.currentPage + 1)
       }
     },
     goToPage(page) {

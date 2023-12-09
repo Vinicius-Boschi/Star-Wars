@@ -30,6 +30,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        color: $dark-blue;
     }
 
     h3 {
@@ -41,8 +42,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 30vh;
         color: #FFF;
-        font-size: 26pt;
+        font-size: 2rem;
     }
 }
