@@ -1,7 +1,7 @@
 <template>
   <div class="list">
     <ul>
-      <li v-for="(hero, index) in heroes" :key="index">
+      <li v-for="(hero, index) in displayHeroes" :key="index">
         <img
           v-if="!loading && hero"
           id="image"
@@ -19,7 +19,7 @@
 <script>
 export default {
   name: "Characters",
-  props: ["apiUrl", "currentPage"],
+  props: ["apiUrl", "currentPage", "searchedCharacter"],
   data() {
     return {
       heroes: [],
@@ -34,10 +34,15 @@ export default {
     imageBaseUrl() {
       return "https://starwars-visualguide.com/assets/img/characters/"
     },
+    displayHeroes() {
+      if (this.searchedCharacter) {
+        return [this.searchedCharacter]
+      }
+      return this.heroes
+    },
   },
   methods: {
     async fetchRequisition(pageNumber = this.currentPage) {
-
       this.loading = true
       this.heroes = []
 

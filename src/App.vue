@@ -12,16 +12,18 @@
       :apiUrl="apiUrl"
       :currentPage="currentPage"
       :updateTotalPages="updateTotalPages"
+      :searchedCharacter="searchedCharacter"
     />
     <Footer />
   </div>
 </template>
 
 <script>
-import Preloader from "./components/Preloader.vue";
-import Header from "./components/Header.vue";
-import Search from "./components/Search.vue";
-import Footer from "./components/Footer.vue";
+import Preloader from "./components/Preloader.vue"
+import Header from "./components/Header.vue"
+import Search from "./components/Search.vue"
+import Footer from "./components/Footer.vue"
+import Characters from "./views/Characters.vue"
 
 export default {
   name: "App",
@@ -30,6 +32,7 @@ export default {
     Header,
     Search,
     Footer,
+    Characters,
   },
 
   data() {
@@ -62,8 +65,15 @@ export default {
     async handleSearchedCharacters(searchResults) {
       if (searchResults && searchResults.length > 0) {
         const firstResult = searchResults[0]
-        firstResult.id = this.extractIdFromUrl(firstResult.url)
-        this.searchedCharacter = firstResult
+        this.searchedCharacter = {
+          ...firstResult,
+          id: Characters.methods.extractIdFromUrl(firstResult.url),
+        }
+
+        const charactersComponent = this.$refs.charactersComponent
+        if (charactersComponent) {
+          charactersComponent.clearCharactersList()
+        }
       } else {
         this.searchedCharacter = null
       }
