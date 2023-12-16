@@ -1,5 +1,6 @@
-import { createRouter, createWebHistory } from "vue-router";
+import { createRouter, createWebHistory } from "vue-router"
 import Home from "./views/Home.vue"
+import Details from "./views/Details.vue"
 
 function loadRoutes() {
   const context = import.meta.glob("./views/*.vue");
@@ -20,6 +21,11 @@ const router = createRouter({
       path: "/",
       name: "home",
       component: Home,
+    },
+    {
+      path: '/details/:name',  
+      name: 'Details', 
+      component: Details,
     },
     ...loadRoutes(),
   ],

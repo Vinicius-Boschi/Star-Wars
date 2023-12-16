@@ -1,48 +1,63 @@
 .list {
-    ul {
-        display: grid;
-        grid-template-columns: repeat(5, 1fr);
-        justify-items: center;
-        gap: 2rem;
-        padding: 2rem;
-        width: calc(100% - 100px);
-    }
+  ul {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    justify-items: center;
+    gap: 2rem;
+    padding: 2rem;
+    width: calc(100% - 100px);
+  }
 
-    .none {
-        display: none;
-    }
+  .none {
+    display: none;
+  }
 
-    li {
-        width: 100%;
-        border: 2px solid $white;
-        border-radius: 10px 10px 0 0;
-    }
+  li {
+    width: 100%;
+    border: 2px solid $white;
+    border-radius: 10px 10px 0 0;
+  }
 
-    img {
-        width: 100%;
-        border-radius: 10px 10px 0 0;
-    }
+  a {
+    text-decoration: none;
 
-    span {
-        background-color: $white;
-        height: 3rem;
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: $dark-blue;
+    :hover {
+      text-decoration: underline;
+      color: $orange;
     }
+  }
 
-    h3 {
-        color: $white;
-        text-align: center;
-    }
+  img {
+    width: 100%;
+    border-radius: 10px 10px 0 0;
+  }
 
-    .loading {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        color: #FFF;
-        font-size: 2rem;
-    }
+  span {
+    background-color: $white;
+    height: 3rem;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: $dark-blue;
+  }
+
+  h3 {
+    color: $white;
+    text-align: center;
+  }
+
+  .spinning {
+    display: flex;
+  }
+
+  .loading {
+    display: flex;
+    justify-content: center;
+    margin: 0 auto;
+  }
+
+  .gif {
+    width: 50%;
+  }
 }

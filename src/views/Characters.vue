@@ -1,39 +1,42 @@
 <template>
   <div class="list">
     <ul>
-      <li v-for="(hero, index) in displayHeroes" :key="index">
-        <img
-          v-if="!loading && hero"
-          id="image"
-          :src="getImageUrl(hero.id)"
-          :alt="hero.name"
-          :data-id="hero.id"
-        />
-        <span>{{ hero.name }}</span>
+      <li v-for="(heroe, index) in displayHeroes" :key="index">
+          <img
+            v-if="!loading && heroe"
+            id="image"
+            :src="getCharacterImageUrl(heroe.url)"
+            :alt="heroe.name"
+            :data-id="heroe.id"
+          />
+          <router-link @click="selectCharacter(heroe)" :to="{ name: 'Details', params: { name: heroe.name } }">
+            <span v-if="!loading">{{ heroe.name }}</span>
+          </router-link>
       </li>
     </ul>
-    <div v-if="loading" class="loading">Loading...</div>
+    <div class="spinning">
+      <div v-if="loading" class="loading">
+        <img class="gif" src="https://github.com/Vinicius-Boschi/Star-Wars/assets/74377158/11ab6385-62f0-49b5-81b4-36cba666cdb1" alt="Loading spinner">
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+import { getImageUrl, extractIdFromUrl } from '../services/imageHelpers'
+
 export default {
   name: "Characters",
-  props: ["apiUrl", "currentPage", "searchedCharacter"],
+  props: ["apiUrl", "currentPage", "searchedCharacter","imageBaseUrl"],
   data() {
     return {
       heroes: [],
       currentUrl: "",
       complementUrl: "people",
       loading: true,
-      error404:
-        "https://i.pinimg.com/originals/c0/6c/9d/c06c9d63bda3f0a823aee1b2f47b0457.png",
     }
   },
   computed: {
-    imageBaseUrl() {
-      return "https://starwars-visualguide.com/assets/img/characters/"
-    },
     displayHeroes() {
       if (this.searchedCharacter) {
         return [this.searchedCharacter]
@@ -42,6 +45,9 @@ export default {
     },
   },
   methods: {
+    selectCharacter(character) {
+      this.$store.dispatch('selectCharacter', character)
+    },
     async fetchRequisition(pageNumber = this.currentPage) {
       this.loading = true
       this.heroes = []
@@ -71,9 +77,10 @@ export default {
           this.updateTotalPages(Math.ceil(characters.count / 10))
 
           if (characters.results) {
-            this.heroes = characters.results.map((hero) => {
-              hero.id = this.extractIdFromUrl(hero.url)
-              return hero
+            this.heroes = characters.results.map((heroe) => {
+              heroe.id = extractIdFromUrl(heroe.url)
+              heroe.imageUrl = this.getCharacterImageUrl(heroe.url)
+              return heroe
             })
           }
         } else {
@@ -96,20 +103,10 @@ export default {
       this.totalPages = newTotalPages
     },
 
-    getImageUrl(id) {
-      if (id && !isNaN(id)) {
-        const imageUrl = `${this.imageBaseUrl}${Number(id)}.jpg`
-        return imageUrl
-      } else {
-        console.error("Invalid id parameter", id)
-        return this.error404 || "Not Found"
-      }
-    },
-
-    extractIdFromUrl(url) {
-      const parts = url.split("/").filter((part) => !!part)
-      return parts.pop()
-    },
+    getCharacterImageUrl(url) {
+      const characterId = extractIdFromUrl(url);
+      return getImageUrl(characterId, this.imageBaseUrl);
+    }
   },
 
   created() {
