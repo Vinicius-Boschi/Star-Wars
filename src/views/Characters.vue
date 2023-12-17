@@ -2,32 +2,47 @@
   <div class="list">
     <ul>
       <li v-for="(heroe, index) in displayHeroes" :key="index">
+        <img
+          v-if="!loading && heroe"
+          id="image"
+          :src="getCharacterImageUrl(heroe.url)"
+          :alt="heroe.name"
+          :data-id="heroe.id"
+        />
+        <router-link
+          @click="selectCharacter(heroe)"
+          :to="{ name: 'Details', params: { name: heroe.name } }"
+        >
           <img
-            v-if="!loading && heroe"
-            id="image"
-            :src="getCharacterImageUrl(heroe.url)"
-            :alt="heroe.name"
-            :data-id="heroe.id"
+            class="icon"
+            src="https://github.com/Vinicius-Boschi/Star-Wars/assets/74377158/06e5d0d6-d982-47a5-9b83-f278350fb794"
           />
-          <router-link @click="selectCharacter(heroe)" :to="{ name: 'Details', params: { name: heroe.name } }">
-            <span v-if="!loading">{{ heroe.name }}</span>
-          </router-link>
+          <span v-if="!loading">{{ heroe.name }}</span>
+          <img
+            class="icon"
+            src="https://github.com/Vinicius-Boschi/Star-Wars/assets/74377158/e96245a6-5e2d-4ecb-a7bf-2a9b2e087745"
+          />
+        </router-link>
       </li>
     </ul>
     <div class="spinning">
       <div v-if="loading" class="loading">
-        <img class="gif" src="https://github.com/Vinicius-Boschi/Star-Wars/assets/74377158/11ab6385-62f0-49b5-81b4-36cba666cdb1" alt="Loading spinner">
+        <img
+          class="gif"
+          src="https://github.com/Vinicius-Boschi/Star-Wars/assets/74377158/11ab6385-62f0-49b5-81b4-36cba666cdb1"
+          alt="Loading spinner"
+        />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { getImageUrl, extractIdFromUrl } from '../services/imageHelpers'
+import { getImageUrl, extractIdFromUrl } from "../services/imageHelpers"
 
 export default {
   name: "Characters",
-  props: ["apiUrl", "currentPage", "searchedCharacter","imageBaseUrl"],
+  props: ["apiUrl", "currentPage", "searchedCharacter", "imageBaseUrl"],
   data() {
     return {
       heroes: [],
@@ -46,7 +61,7 @@ export default {
   },
   methods: {
     selectCharacter(character) {
-      this.$store.dispatch('selectCharacter', character)
+      this.$store.dispatch("selectCharacter", character)
     },
     async fetchRequisition(pageNumber = this.currentPage) {
       this.loading = true
@@ -71,9 +86,9 @@ export default {
           throw new Error(`HTTP error! Status: ${resp.status}`)
         }
 
-        const contentType = resp.headers.get("content-type")
+        const contentType = resp.headers.get("content-type");
         if (contentType && contentType.includes("application/json")) {
-          const characters = await resp.json()
+          const characters = await resp.json();
           this.updateTotalPages(Math.ceil(characters.count / 10))
 
           if (characters.results) {
@@ -104,9 +119,9 @@ export default {
     },
 
     getCharacterImageUrl(url) {
-      const characterId = extractIdFromUrl(url);
-      return getImageUrl(characterId, this.imageBaseUrl);
-    }
+      const characterId = extractIdFromUrl(url)
+      return getImageUrl(characterId, this.imageBaseUrl)
+    },
   },
 
   created() {
@@ -131,6 +146,6 @@ export default {
 </script>
 
 <style lang="scss">
-  @import "../assets/scss/variables.scss";
-  @import "../assets/scss/styles/characters.scss";
+@import "../assets/scss/variables.scss";
+@import "../assets/scss/styles/characters.scss";
 </style>

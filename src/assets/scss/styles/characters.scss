@@ -20,6 +20,10 @@
 
   a {
     text-decoration: none;
+    background-color: $white;
+    display: flex;
+    align-items: center;
+    padding: 5px;
 
     :hover {
       text-decoration: underline;
@@ -32,8 +36,12 @@
     border-radius: 10px 10px 0 0;
   }
 
+  .icon {
+    width: 30px;
+    height: 30px;
+  }
+
   span {
-    background-color: $white;
     height: 3rem;
     width: 100%;
     display: flex;

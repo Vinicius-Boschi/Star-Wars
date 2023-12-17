@@ -24,6 +24,7 @@ import Header from "./components/Header.vue"
 import Search from "./components/Search.vue"
 import Footer from "./components/Footer.vue"
 import Characters from "./views/Characters.vue"
+import { extractIdFromUrl } from "./services/imageHelpers"
 
 export default {
   name: "App",
@@ -67,7 +68,7 @@ export default {
         const firstResult = searchResults[0]
         this.searchedCharacter = {
           ...firstResult,
-          id: Characters.methods.extractIdFromUrl(firstResult.url),
+          id: extractIdFromUrl(firstResult.url),
         }
 
         const charactersComponent = this.$refs.charactersComponent
