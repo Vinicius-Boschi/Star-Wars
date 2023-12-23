@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>movies</h1>
+    <h1>Movies</h1>
     <div v-for="movie in movies" :key="movie.id">
       <h2>{{ movie.title }}</h2>
     </div>
@@ -13,7 +13,7 @@ export default {
   data() {
     return {
       movies: [],
-    };
+    }
   },
   methods: {
     
