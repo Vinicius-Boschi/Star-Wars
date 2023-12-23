@@ -1,12 +1,14 @@
-export async function searchedCharacters(searchQuery, currentPage) {
-    try {
-      const response = await fetch(
-        `https://swapi.dev/api/people/?search=${searchQuery}&page=${currentPage}`
-      )
-      const data = await response.json()
-      return data.results
-    } catch (error) {
-      console.error("Failed to search the characters", error)
-      return []
-    }
+import { fetchData } from "./api"
+
+export const searchedCharacters = async (query) => {
+  let results = []
+
+  try {
+    const characters = await fetchData(`people/?search=${query}`)
+    results = characters.results
+  } catch (error) {
+    console.error("Error fetching characters", error)
+  }
+
+  return results
 }

@@ -69,15 +69,33 @@ export default {
     }
   },
   watch: {
-    searchQuery: "searchedCharacters",
+    searchQuery: {
+      handler: "searchedCharacters",
+    },
   },
   methods: {
     async searchedCharacters() {
-      const results = await searchedCharacters(
-        this.searchQuery,
-        this.currentPage
-      );
-      this.$emit("searchedCharacters", results)
+      try {
+        console.log(
+          "Searching characters:",
+          this.searchQuery,
+          this.currentPage
+        )
+
+        let results = null
+
+        if (this.searchQuery.trim() !== "") {
+          results = await searchedCharacters(
+            this.searchQuery,
+            this.currentPage
+          )
+          console.log("Search results:", results)
+        }
+
+        this.$emit("searchedCharacters", results)
+      } catch (error) {
+        console.error("Error performing search", error)
+      }
     },
     prevPage() {
       if (this.currentPage > 1) {
@@ -97,6 +115,6 @@ export default {
 </script>
 
 <style lang="scss">
-  @import "../assets/scss/variables.scss";
-  @import "../assets/scss/styles/search.scss";
+@import "../assets/scss/variables.scss";
+@import "../assets/scss/styles/search.scss";
 </style>

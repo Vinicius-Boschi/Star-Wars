@@ -4,7 +4,6 @@
       <li v-for="(heroe, index) in displayHeroes" :key="index">
         <img
           v-if="!loading && heroe"
-          id="image"
           :src="getCharacterImageUrl(heroe.url)"
           :alt="heroe.name"
           :data-id="heroe.id"
@@ -38,18 +37,19 @@
 </template>
 
 <script>
+import { fetchData } from "../services/api"
 import { getImageUrl, extractIdFromUrl } from "../services/imageHelpers"
 
 export default {
   name: "Characters",
-  props: ["apiUrl", "currentPage", "searchedCharacter", "imageBaseUrl"],
+  props: ["currentPage", "searchedCharacter", "imageBaseUrl"],
   data() {
     return {
       heroes: [],
-      currentUrl: "",
       complementUrl: "people",
       loading: true,
-    }
+      totalPages: 0,
+    };
   },
   computed: {
     displayHeroes() {
@@ -67,72 +67,47 @@ export default {
       this.loading = true
       this.heroes = []
 
-      if (!this.apiUrl) {
-        console.error("API URL is not defined.")
-        this.loading = false
-        return
-      }
-
-      let req = new Request(
-        `${this.currentUrl}${this.complementUrl}?page=${pageNumber}`
-      )
-
-      let resp
-
       try {
-        resp = await fetch(req)
+        const characters = await fetchData(this.complementUrl, pageNumber)
+        this.totalPages = Math.ceil(characters.count / 10)
 
-        if (!resp.ok) {
-          throw new Error(`HTTP error! Status: ${resp.status}`)
+        if (characters.results) {
+          this.heroes = characters.results.map((heroe) => {
+            heroe.id = extractIdFromUrl(heroe.url)
+            heroe.imageUrl = this.getCharacterImageUrl(heroe.url)
+            return heroe
+          })
         }
-
-        const contentType = resp.headers.get("content-type");
-        if (contentType && contentType.includes("application/json")) {
-          const characters = await resp.json();
-          this.updateTotalPages(Math.ceil(characters.count / 10))
-
-          if (characters.results) {
-            this.heroes = characters.results.map((heroe) => {
-              heroe.id = extractIdFromUrl(heroe.url)
-              heroe.imageUrl = this.getCharacterImageUrl(heroe.url)
-              return heroe
-            })
-          }
-        } else {
-          console.error(
-            `Invalid content type. Expected JSON. Actual: ${contentType}`
-          )
-        }
-
-        this.loading = false
       } catch (error) {
         console.error("Error fetching characters", error)
-        if (resp) {
-          console.log("Response:", await resp.text())
-        }
+      } finally {
         this.loading = false
       }
-    },
-
-    updateTotalPages(newTotalPages) {
-      this.totalPages = newTotalPages
     },
 
     getCharacterImageUrl(url) {
       const characterId = extractIdFromUrl(url)
       return getImageUrl(characterId, this.imageBaseUrl)
     },
+
+    handleSearchedCharacters(results) {
+      this.loading = false
+
+      if (results === null) {
+        this.searchedCharacter = null;
+        this.fetchRequisition(this.currentPage)
+      } else {
+        this.heroes = results.map((heroe) => {
+          heroe.id = extractIdFromUrl(heroe.url)
+          heroe.imageUrl = this.getCharacterImageUrl(heroe.url)
+          return heroe
+        })
+      }
+    },
   },
 
   created() {
-    if (this.$props.apiUrl && typeof this.$props.apiUrl === "string") {
-      this.currentUrl = this.$props.apiUrl
-      this.fetchRequisition(this.currentPage)
-    } else {
-      console.error(
-        "this.$props.apiUrl não é uma string válida ou está indefinida."
-      )
-    }
+    this.fetchRequisition(this.currentPage)
   },
   watch: {
     currentPage() {
