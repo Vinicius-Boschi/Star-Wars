@@ -1,5 +1,7 @@
 import Vuex from "vuex"
 
+import { fetchData } from "./api"
+
 export default new Vuex.Store({
   state: {
     selectedCharacter: null,
@@ -14,10 +16,10 @@ export default new Vuex.Store({
     },
   },
   actions: {
-    async selectCharacter({ commit }, character) {
-      commit("setSelectedCharacter", character)
-      const photo = await fetchRequision(character)
-      commit("setSelectedCharacterPhoto", photo)
+    async selectCharacter({ commit }, characterId) {
+      commit("setSelectedCharacter", characterId)
+      const photo = await fetchData(characterId)
+      commit("setPhoto", photo)
     },
   },
   getters: {

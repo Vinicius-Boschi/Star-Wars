@@ -10,7 +10,7 @@
         />
         <router-link
           @click="selectCharacter(heroe)"
-          :to="{ name: 'Details', params: { name: heroe.name } }"
+          :to="{ name: 'Details', params: { id: heroe.id } }"
         >
           <img
             class="icon"
@@ -49,7 +49,7 @@ export default {
       complementUrl: "people",
       loading: true,
       totalPages: 0,
-    };
+    }
   },
   computed: {
     displayHeroes() {
@@ -60,8 +60,8 @@ export default {
     },
   },
   methods: {
-    selectCharacter(character) {
-      this.$store.dispatch("selectCharacter", character)
+    selectCharacter(characterId) {
+      this.$store.dispatch("selectCharacter", characterId)
     },
     async fetchRequisition(pageNumber = this.currentPage) {
       this.loading = true
@@ -94,7 +94,7 @@ export default {
       this.loading = false
 
       if (results === null) {
-        this.searchedCharacter = null;
+        this.searchedCharacter = null
         this.fetchRequisition(this.currentPage)
       } else {
         this.heroes = results.map((heroe) => {
@@ -121,6 +121,6 @@ export default {
 </script>
 
 <style lang="scss">
-@import "../assets/scss/variables.scss";
-@import "../assets/scss/styles/characters.scss";
+  @import "../assets/scss/variables.scss";
+  @import "../assets/scss/styles/characters.scss";
 </style>
