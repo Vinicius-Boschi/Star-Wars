@@ -116,6 +116,7 @@ export default {
   async created() {
     try {
       const characterId = this.$route.params.id
+      console.log(characterId)
       this.characterId = await fetchData(`people/${characterId}`)
 
       const homeworldId = extractIdFromUrl(this.characterId.homeworld)

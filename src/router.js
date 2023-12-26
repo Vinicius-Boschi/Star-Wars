@@ -28,6 +28,31 @@ const router = createRouter({
       component: Details,
       props: true,
     },
+    // {
+    //   path: '/details/movies/:id',
+    //   name: 'Movies',
+    //   component: Movies,
+    // },
+    // {
+    //   path: '/details/vehicles/:id',
+    //   name: 'Vehicles',
+    //   component: Vehicles,
+    // },
+    // {
+    //   path: '/details/starships/:id',
+    //   name: 'Starships',
+    //   component: Starships,
+    // },
+    // {
+    //   path: '/details/species/:id',
+    //   name: 'Species',
+    //   component: Species,
+    // },
+    // {
+    //   path: '/details/planets/:id',
+    //   name: 'Planets',
+    //   component: Planets,
+    // },
     ...loadRoutes(),
   ],
 })
