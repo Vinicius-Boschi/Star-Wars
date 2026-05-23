@@ -1,0 +1,73 @@
+@use "../variables.scss" as *;
+
+.list {
+  ul {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    justify-items: center;
+    gap: 2rem;
+    padding: 2rem;
+    width: calc(100% - 100px);
+  }
+
+  .none {
+    display: none;
+  }
+
+  li {
+    width: 100%;
+    border: 2px solid $white;
+    border-radius: 10px 10px 0 0;
+  }
+
+  a {
+    text-decoration: none;
+    background-color: $white;
+    display: flex;
+    align-items: center;
+    padding: 5px;
+
+    :hover {
+      text-decoration: underline;
+      color: $orange;
+    }
+  }
+
+  img {
+    width: 100%;
+    border-radius: 10px 10px 0 0;
+  }
+
+  .icon {
+    width: 30px;
+    height: 30px;
+  }
+
+  span {
+    height: 3rem;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: $dark-blue;
+  }
+
+  h3 {
+    color: $white;
+    text-align: center;
+  }
+
+  .spinning {
+    display: flex;
+  }
+
+  .loading {
+    display: flex;
+    justify-content: center;
+    margin: 0 auto;
+  }
+
+  .gif {
+    width: 50%;
+  }
+}

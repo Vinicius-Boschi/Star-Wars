@@ -1,0 +1,42 @@
+@use "../variables.scss" as *;
+
+.pagination {
+  display: flex;
+  justify-content: center;
+
+  .item {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid $light-gray;
+    cursor: pointer;
+    background-color: white;
+
+    &:first-child {
+      border-top-left-radius: 3px;
+      border-bottom-left-radius: 3px;
+    }
+
+    &:last-child {
+      border-top-right-radius: 3px;
+      border-bottom-right-radius: 3px;
+    }
+
+    &:hover {
+      background-color: $light-gray;
+      border-color: lighten($gray, 50%);
+      z-index: 3;
+    }
+
+    &.current {
+      cursor: default;
+      color: white;
+      background-color: $orange;
+      border-color: $orange;
+      z-index: 2;
+    }
+
+    + .item {
+      margin-left: -1px;
+      margin-right: 0;
+    }
+  }
+}
