@@ -5,7 +5,11 @@ import VitePages from 'vite-plugin-pages'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+<<<<<<< HEAD
   plugins: [  
+=======
+  plugins: [
+>>>>>>> 76e237d54cf98249cefd13e80c326b480c9e13e3
     vue(),
     VitePages()
   ],
@@ -14,6 +18,7 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
+<<<<<<< HEAD
     css: {
     preprocessorOptions: {
       scss: {
@@ -21,4 +26,6 @@ export default defineConfig({
       },
     },
   },  
+=======
+>>>>>>> 76e237d54cf98249cefd13e80c326b480c9e13e3
 })

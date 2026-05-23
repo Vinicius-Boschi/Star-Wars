@@ -38,5 +38,10 @@ export default {
 </script>
 
 <style lang="scss">
+<<<<<<< HEAD
 
+=======
+  @import "../assets/scss/variables.scss";
+  @import "../assets/scss/styles/header.scss";
+>>>>>>> 76e237d54cf98249cefd13e80c326b480c9e13e3
 </style>
