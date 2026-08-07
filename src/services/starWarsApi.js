@@ -1,43 +1,39 @@
-const API_URL = import.meta.env.VITE_API_URL;
+const API = import.meta.env.VITE_API_URL
 
 async function request(endpoint) {
-  const response = await fetch(`${API_URL}/${endpoint}`);
+  const response = await fetch(`${API}${endpoint}`)
 
   if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
+    throw new Error(`Star Wars API: ${response.status}`)
   }
 
-  return response.json();
+  return response.json()
 }
 
-export async function getCharacters(page = 1) {
-  return request([`/people/?page=${page}`]);
+export function getCharacters(page = 1) {
+  return request(`/characters?page=${page}`)
 }
 
-export async function getCharacter(id) {
-  return request([`/people/${id}`]);
+export function getCharacter(id) {
+  return request(`/character/${id}`)
 }
 
-export async function searchCharacters(query) {
-  return request(`/people/?search=${encodeURIComponent(query)}`);
+export function getFilms() {
+  return request("/films")
 }
 
-export async function getPlanets(page = 1) {
-  return request([`/planets/?page=${page}`]);
+export function getPlanets() {
+  return request("/planets")
 }
 
-export async function getFilms() {
-  return request([`/films/`]);
+export function getSpecies() {
+  return request("/species")
 }
 
-export async function getStarships(page = 1) {
-  return request([`/starships/?page=${page}`]);
+export function getStarships() {
+  return request("/starships")
 }
 
-export async function getVehicles(page = 1) {
-  return request([`/vehicles/?page=${page}`]);
-}
-
-export async function getSpecies(page = 1) {
-  return request([`/species/?page=${page}`]);
+export function getVehicles() {
+  return request("/vehicles")
 }
