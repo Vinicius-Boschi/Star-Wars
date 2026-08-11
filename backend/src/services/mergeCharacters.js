@@ -1,12 +1,12 @@
-import { getPeople, getPerson } from "../providers/swapi.js"
-import { getCharacters as getDatabankCharacters } from "../providers/databank.js"
+import { getPeople, getPerson } from "../providers/swapi.js";
+import { getCharacters as getDatabankCharacters } from "../providers/databank.js";
 
 function extractIdFromUrl(url) {
-  if (!url) return null
+  if (!url) return null;
 
-  const match = url.match(/\/(\d+)\/?$/)
+  const match = url.match(/\/(\d+)\/?$/);
 
-  return match ? Number(match[1]) : null
+  return match ? Number(match[1]) : null;
 }
 
 function normalizeSwapiCharacter(character) {
@@ -31,91 +31,175 @@ function normalizeSwapiCharacter(character) {
     species: character.species || [],
     vehicles: character.vehicles || [],
     starships: character.starships || [],
-  }
+  };
 }
 
 function normalizeDatabankCharacter(character) {
   return {
     id: character._id,
     name: character.name,
-    image: character.image,
-    description: character.description ?? "",
-  }
+    image: character.image || null,
+    description: character.description || "",
+  };
 }
 
 function normalizeName(name) {
   return name
     .toLowerCase()
+    .replace(/\([^)]*\)/g, "")
     .replace(/"/g, "")
     .replace(/'/g, "")
     .replace(/-/g, " ")
     .replace(/\s+/g, " ")
-    .trim()
+    .trim();
+}
+
+async function getAllDatabankCharacters() {
+  const characters = [];
+
+  let page = 1;
+  const limit = 100;
+
+  while (true) {
+    const response = await getDatabankCharacters(page, limit);
+
+    const data = Array.isArray(response)
+      ? response
+      : response.data || response.results || [];
+
+    characters.push(...data);
+
+    const total = response.info?.total;
+
+    if (!total || characters.length >= total || !data.length) {
+      break;
+    }
+
+    page++;
+  }
+
+  return characters;
+}
+
+function findDatabankCharacter(name, databankCharacters) {
+  const normalizedName = normalizeName(name);
+
+  const exactMatch = databankCharacters.find(
+    (character) => normalizeName(character.name) === normalizedName,
+  );
+
+  if (exactMatch) {
+    return normalizeDatabankCharacter(exactMatch);
+  }
+
+  const ignoredWords = new Set([
+    "darth",
+    "lord",
+    "general",
+    "admiral",
+    "captain",
+    "commander",
+    "count",
+    "grand",
+    "master",
+    "chief",
+    "major",
+    "colonel",
+    "senator",
+    "king",
+    "queen",
+    "princess",
+    "prince",
+  ]);
+
+  const nameWords = normalizedName
+    .split(" ")
+    .filter((word) => word.length > 2 && !ignoredWords.has(word));
+
+  if (!nameWords.length) {
+    return null;
+  }
+
+  let bestMatch = null;
+  let bestScore = 0;
+
+  for (const character of databankCharacters) {
+    const databankName = normalizeName(character.name);
+
+    const databankWords = databankName
+      .split(" ")
+      .filter((word) => word.length > 2 && !ignoredWords.has(word));
+
+    const matchedWords = nameWords.filter((word) =>
+      databankWords.includes(word),
+    );
+
+    const score = matchedWords.length;
+
+    if (score > bestScore) {
+      bestScore = score;
+      bestMatch = character;
+    }
+  }
+
+  if (bestMatch && bestScore > 0) {
+    return normalizeDatabankCharacter(bestMatch);
+  }
+
+  return null;
 }
 
 export async function getCharacters() {
-  const [swapiData, databankData] = await Promise.all([
+  const [swapiData, databankCharacters] = await Promise.all([
     getPeople(),
-    getDatabankCharacters(),
-  ])
+    getAllDatabankCharacters(),
+  ]);
 
   const swapiCharacters = Array.isArray(swapiData)
     ? swapiData
-    : swapiData.results || []
+    : swapiData.results || [];
 
-  const databankCharacters = Array.isArray(databankData)
-    ? databankData
-    : databankData.data || databankData.results || []
+  const characters = swapiCharacters
+    .map((character) => {
+      const swapiCharacter = normalizeSwapiCharacter(character);
 
-  const normalizedDatabank = databankCharacters.map(normalizeDatabankCharacter)
+      const databankCharacter = findDatabankCharacter(
+        swapiCharacter.name,
+        databankCharacters,
+      );
 
-  const databankMap = new Map(
-    normalizedDatabank.map((character) => [
-      normalizeName(character.name),
-      character,
-    ]),
-  )
+      if (!databankCharacter) {
+        return null;
+      }
 
-  return swapiCharacters.map((character) => {
-    const swapiCharacter = normalizeSwapiCharacter(character)
+      return {
+        ...swapiCharacter,
+        image: databankCharacter.image,
+        description: databankCharacter.description,
+      };
+    })
+    .filter(Boolean);
 
-    const databankCharacter = databankMap.get(
-      normalizeName(swapiCharacter.name),
-    )
-
-    return {
-      ...swapiCharacter,
-
-      image: databankCharacter?.image ?? null,
-      description: databankCharacter?.description ?? "",
-    }
-  })
+  return characters;
 }
 
 export async function getCharacter(id) {
-  const [character, databankData] = await Promise.all([
+  const [character, databankCharacters] = await Promise.all([
     getPerson(id),
-    getDatabankCharacters(),
-  ])
+    getAllDatabankCharacters(),
+  ]);
 
-  const swapiCharacter = normalizeSwapiCharacter(character)
+  const swapiCharacter = normalizeSwapiCharacter(character);
 
-  const databankCharacters = Array.isArray(databankData)
-    ? databankData
-    : databankData.data || databankData.results || []
-
-  const databankMap = new Map(
-    databankCharacters.map((character) => [
-      normalizeName(character.name),
-      normalizeDatabankCharacter(character),
-    ]),
-  )
-
-  const databankCharacter = databankMap.get(normalizeName(swapiCharacter.name))
+  const databankCharacter = findDatabankCharacter(
+    swapiCharacter.name,
+    databankCharacters,
+  );
 
   return {
     ...swapiCharacter,
+
     image: databankCharacter?.image ?? null,
     description: databankCharacter?.description ?? "",
-  }
+  };
 }
