@@ -37,13 +37,15 @@
         :key="character.id"
         class="character-card"
       >
-        <img
-          v-if="character.image"
-          :src="character.image"
-          :alt="character.name"
-          loading="lazy"
-          class="character-card__image"
-        />
+        <div class="character-card__media">
+          <img
+            v-if="character.image"
+            :src="character.image"
+            :alt="character.name"
+            loading="lazy"
+            class="character-card__image"
+          />
+        </div>
 
         <button
           class="character-card__favorite"
@@ -51,7 +53,11 @@
             'character-card__favorite--active': isFavorite(character.id),
           }"
           type="button"
-          aria-label="Adicionar aos favoritos"
+          :aria-label="
+            isFavorite(character.id)
+              ? 'Remover dos favoritos'
+              : 'Adicionar aos favoritos'
+          "
           @click="toggleFavorite(character)"
         >
           <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -86,6 +92,7 @@ const loading = ref(true);
 const error = ref(null);
 const characters = ref([]);
 
+const favorites = ref([]);
 const selectedCharacter = ref(null);
 
 async function loadCharacters() {
@@ -108,7 +115,45 @@ function openCharacter(character) {
   selectedCharacter.value = character;
 }
 
-onMounted(loadCharacters);
+function isFavorite(id) {
+  return favorites.value.some(
+    (favoriteId) => Number(favoriteId) === Number(id),
+  );
+}
+
+function toggleFavorite(character) {
+  const index = favorites.value.indexOf(character.id);
+
+  if (index === -1) {
+    favorites.value.push(character.id);
+  } else {
+    favorites.value.splice(index, 1);
+  }
+
+  localStorage.setItem("star_wars_favorites", JSON.stringify(favorites.value));
+}
+
+function loadFavorites() {
+  const savedFavorites = localStorage.getItem("star_wars_favorites");
+
+  if (!savedFavorites) return;
+
+  try {
+    const parsedFavorites = JSON.parse(savedFavorites);
+
+    favorites.value = Array.isArray(parsedFavorites)
+      ? parsedFavorites.map(Number)
+      : [];
+  } catch (error) {
+    console.error("Erro ao carregar favoritos: ", error);
+    favorites.value = [];
+  }
+}
+
+onMounted(() => {
+  loadFavorites();
+  loadCharacters();
+});
 </script>
 
 <style lang="scss">

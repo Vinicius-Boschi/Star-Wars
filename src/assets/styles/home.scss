@@ -53,7 +53,7 @@ main {
 
   &__grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 1.5rem;
     padding: 2rem;
   }
@@ -73,7 +73,7 @@ main {
   overflow: hidden;
   border-radius: 16px;
   background: #151515;
-  aspect-ratio: 2/3;
+  aspect-ratio: 3/3;
 
   transition: transform 0.3s ease;
   box-shadow: 0.3s ease;
@@ -81,6 +81,15 @@ main {
   &:hover {
     transform: translateY(-6px);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  }
+
+  &__media {
+    position: relative;
+    width: 100%;
+    height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   &__image {
@@ -117,7 +126,7 @@ main {
     background: none;
     cursor: pointer;
 
-        svg {
+    svg {
       width: 30px;
       height: 30px;
 
@@ -129,7 +138,9 @@ main {
     }
 
     &--active {
-      fill: #f5cc18;
+      svg {
+        fill: #f5cc18;
+      }
     }
   }
 
