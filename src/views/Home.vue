@@ -1,36 +1,76 @@
 <template>
-  <main class="">
+  <main>
     <Header />
 
-    <p v-if="loading">Carregando...</p>
+    <section class="characters">
+      <div class="characters__container">
+        <header class="characters__header">
+          <img
+            class="characters__background"
+            src="../assets/images/Background.png"
+            alt="background"
+          />
 
-    <p v-else-if="error">
+          <div class="characters__content">
+            <h1 class="characters__title">
+              Explore o <span>universo star wars</span>
+            </h1>
+
+            <p>
+              Descubra personagens, planetas, naves, veículos e tudo sobre a
+              saga que conquistou gerações.
+            </p>
+          </div>
+        </header>
+      </div>
+    </section>
+
+    <p v-if="loading" class="characters__status">Carregando personagens...</p>
+
+    <p v-else-if="error" class="characters__status characters__status--error">
       {{ error }}
     </p>
 
-    <div v-else class="">
-      <article v-for="character in characters" :key="character.id" class="">
+    <div v-else class="characters__grid">
+      <article
+        v-for="character in characters"
+        :key="character.id"
+        class="character-card"
+      >
         <img
           v-if="character.image"
           :src="character.image"
           :alt="character.name"
+          loading="lazy"
+          class="character-card__image"
         />
 
-        <div class="">
+        <button
+          class="character-card__favorite"
+          :class="{
+            'character-card__favorite--active': isFavorite(character.id),
+          }"
+          type="button"
+          aria-label="Adicionar aos favoritos"
+          @click="toggleFavorite(character)"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M12 2.5l2.94 5.95 6.56.95-4.75 4.63 1.12 6.54L12 17.48l-5.87 3.09 1.12-6.54L2.5 9.4l6.56-.95L12 2.5z"
+            />
+          </svg>
+        </button>
+
+        <div class="character-card__content">
           <h2>{{ character.name }}</h2>
 
-          <p v-if="character.description">
-            {{ character.description }}
-          </p>
-
-          <ul>
-            <li><strong>Altura:</strong> {{ character.height }}</li>
-            <li><strong>Peso:</strong> {{ character.mass }}</li>
-            <li><strong>Nascimento:</strong> {{ character.birth_year }}</li>
-            <li><strong>Gênero:</strong> {{ character.gender }}</li>
-          </ul>
-
-          <button>Ver detalhes</button>
+          <button
+            type="button"
+            class="character-card__button"
+            @click="openCharacter(character)"
+          >
+            Ver detalhes
+          </button>
         </div>
       </article>
     </div>
@@ -38,29 +78,39 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue"
-import { getCharacters } from "../services/starWarsApi"
-import Header from "../components/Header.vue"
+import { onMounted, ref } from "vue";
+import { getCharacters } from "../services/starWarsApi";
+import Header from "../components/Header.vue";
 
-const loading = ref(true)
-const error = ref(null)
-const characters = ref([])
+const loading = ref(true);
+const error = ref(null);
+const characters = ref([]);
+
+const selectedCharacter = ref(null);
 
 async function loadCharacters() {
-  loading.value = true
-  error.value = null
+  loading.value = true;
+  error.value = null;
 
   try {
-    const data = await getCharacters()
+    const data = await getCharacters();
 
-    characters.value = Array.isArray(data) ? data : data.results
+    characters.value = Array.isArray(data) ? data : data.results || [];
   } catch (err) {
-    console.error(err)
-    error.value = "Erro ao carregar personagens."
+    console.error(err);
+    error.value = "Erro ao carregar personagens.";
   } finally {
-    loading.value = false
+    loading.value = false;
   }
 }
 
-onMounted(loadCharacters)
+function openCharacter(character) {
+  selectedCharacter.value = character;
+}
+
+onMounted(loadCharacters);
 </script>
+
+<style lang="scss">
+@use "../assets/scss/variables.scss";
+</style>
