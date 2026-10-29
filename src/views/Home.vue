@@ -1,6 +1,10 @@
 <template>
   <main>
     <Header />
+<<<<<<< HEAD
+=======
+
+>>>>>>> 66bd987012c723e8dfa5766c360ce59ab0293269
     <section class="characters">
       <div class="characters__container">
         <header class="characters__header">
@@ -83,74 +87,75 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
-import { getCharacters } from "../services/starWarsApi";
-import Header from "../components/Header.vue";
+import { onMounted, ref } from "vue"
+import { getCharacters } from "../services/starWarsApi"
+import Header from "../components/Header.vue"
 
-const loading = ref(true);
-const error = ref(null);
-const characters = ref([]);
+const loading = ref(true)
+const error = ref(null)
+const characters = ref([])
 
-const favorites = ref([]);
-const selectedCharacter = ref(null);
+const favorites = ref([])
+const selectedCharacter = ref(null)
 
 async function loadCharacters() {
-  loading.value = true;
-  error.value = null;
+  loading.value = true
+  error.value = null
 
   try {
-    const data = await getCharacters();
+    const data = await getCharacters()
 
-    characters.value = Array.isArray(data) ? data : data.results || [];
+    characters.value = Array.isArray(data) ? data : data.results || []
   } catch (err) {
-    console.error(err);
-    error.value = "Erro ao carregar personagens.";
+    console.error(err)
+    error.value = "Erro ao carregar personagens."
   } finally {
-    loading.value = false;
+    loading.value = false
   }
 }
 
 function openCharacter(character) {
-  selectedCharacter.value = character;
+  selectedCharacter.value = character
 }
 
 function isFavorite(id) {
   return favorites.value.some(
     (favoriteId) => Number(favoriteId) === Number(id),
-  );
+  )
 }
 
 function toggleFavorite(character) {
-  const index = favorites.value.indexOf(character.id);
+  const index = favorites.value.indexOf(character.id)
 
   if (index === -1) {
-    favorites.value.push(character.id);
+    favorites.value.push(character.id)
   } else {
-    favorites.value.splice(index, 1);
+    favorites.value.splice(index, 1)
   }
 
-  localStorage.setItem("star_wars_favorites", JSON.stringify(favorites.value));
+  localStorage.setItem("star_wars_favorites", JSON.stringify(favorites.value))
 }
 
 function loadFavorites() {
-  const savedFavorites = localStorage.getItem("star_wars_favorites");
+  const savedFavorites = localStorage.getItem("star_wars_favorites")
 
-  if (!savedFavorites) return;
+  if (!savedFavorites) return
 
   try {
-    const parsedFavorites = JSON.parse(savedFavorites);
+    const parsedFavorites = JSON.parse(savedFavorites)
 
     favorites.value = Array.isArray(parsedFavorites)
       ? parsedFavorites.map(Number)
-      : [];
+      : []
   } catch (error) {
-    console.error("Erro ao carregar favoritos: ", error);
-    favorites.value = [];
+    console.error("Erro ao carregar favoritos: ", error)
+    favorites.value = []
   }
 }
 
 onMounted(() => {
-  loadFavorites();
-  loadCharacters();
-});
+  loadFavorites()
+  loadCharacters()
+})
+
 </script>
