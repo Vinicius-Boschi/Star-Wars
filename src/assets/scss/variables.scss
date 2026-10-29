@@ -1,0 +1,32 @@
+@import url('https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
+$white: #FFFF;
+$background: #0b0b0f;
+$red: #ff0000;
+$dark-gray: #2c2c2c;
+$universe: "Alfa Slab One", serif;
+$title: #f5cc18;
+
+@mixin mobile {
+  @media (max-width: $mobile) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media (max-width: $tablet) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media (max-width: $desktop) {
+    @content;
+  }
+}
+
+@mixin large-desktop {
+  @media (max-width: $large-desktop) {
+    @content;
+  }
+}

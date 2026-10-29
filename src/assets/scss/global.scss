@@ -1,0 +1,10 @@
+@use "variables" as *;
+@use "reset" as *;
+@use "../styles/home.scss" as *;
+@use "../styles/header.scss" as *;
+
+body {
+  font-family: "Roboto", serif;
+  background-color: $background;
+  color: $white;
+}
