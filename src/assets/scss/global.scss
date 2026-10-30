@@ -1,7 +1,10 @@
-@use "variables" as *;
-@use "reset" as *;
-@use "../styles/home.scss" as *;
-@use "../styles/header.scss" as *;
+@use "./variables.scss" as *;
+@use "./reset.scss" as *;
+
+@use "./styles/banner.scss" as *;
+@use "./styles/cards.scss" as *;
+@use "./styles/header.scss" as *;
+@use "./styles/modal.scss" as *;
 
 body {
   font-family: "Roboto", serif;

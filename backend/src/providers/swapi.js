@@ -1,5 +1,6 @@
+const API = process.env.SWAPI_URL
+
 async function request(endpoint) {
-  const API = process.env.SWAPI_URL
   const response = await fetch(`${API}${endpoint}`)
 
   if (!response.ok) {

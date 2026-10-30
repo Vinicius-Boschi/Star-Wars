@@ -1,6 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
 
-$white: #FFFF;
+$white: #ffff;
 $background: #0b0b0f;
 $red: #ff0000;
 $dark-gray: #2c2c2c;
@@ -30,7 +30,3 @@ $title: #f5cc18;
     @content;
   }
 }
-
-@use "../styles/header.scss";
-@use "../styles/home.scss";
-@import url('https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');

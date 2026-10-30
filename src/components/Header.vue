@@ -12,36 +12,32 @@
         </div>
         <div class="header__links-container">
           <ul class="header__list">
-            <li class="header__links">
-              <a href="">Home</a>
-            </li>
-            <li class="header__links">
-              <a href="">Personagens</a>
-            </li>
-            <li class="header__links">
-              <a href="">Filmes</a>
-            </li>
-            <li class="header__links">
-              <a href="">Planetas</a>
-            </li>
-            <li class="header__links">
-              <a href="">Naves</a>
-            </li>
-            <li class="header__links">
-              <a href="">Veículos</a>
-            </li>
-            <li class="header__links">
-              <a href="">Espécies</a>
-            </li>
-            <li class="header__links">
-              <a href="">Favoritos</a>
+            <li class="header__links" v-for="item in items" :key="item.name">
+              <RouterLink :to="item.route">{{ item.title }}</RouterLink>
             </li>
           </ul>
         </div>
         <div class="header__search">
-          <input type="search" class="header__input" placeholder="Pesquise...">
+          <input
+            type="search"
+            class="header__input"
+            placeholder="Pesquise..."
+          />
         </div>
       </nav>
     </div>
   </header>
 </template>
+
+<script setup>
+const items = [
+  { name: "Home", title: "Home", route: "/" },
+  { name: "Characters", title: "Personagens", route: "/" },
+  { name: "Movies", title: "Filmes", route: "/" },
+  { name: "Planets", title: "Planetas", route: "/" },
+  { name: "Ships", title: "Naves", route: "/" },
+  { name: "Vehicle", title: "Veiculos", route: "/" },
+  { name: "Specie", title: "Especies", route: "/" },
+  { name: "Favorites", title: "Favoritos", route: "/favorites" },
+]
+</script>
