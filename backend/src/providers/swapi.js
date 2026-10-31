@@ -10,10 +10,14 @@ async function request(endpoint) {
   return response.json()
 }
 
-export function getPeople() {
+export async function getPeople() {
   return request("/people")
 }
 
-export function getPerson(id) {
+export async function getPerson(id) {
   return request(`/people/${id}`)
+}
+
+export async function getFilms() {
+  return request("/films")
 }

@@ -1,12 +1,12 @@
-import { getPeople, getPerson } from "../providers/swapi.js";
-import { getCharacters as getDatabankCharacters } from "../providers/databank.js";
+import { getPeople, getPerson, getFilms } from "../providers/swapi.js"
+import { getCharacters as getDatabankCharacters } from "../providers/databank.js"
 
 function extractIdFromUrl(url) {
-  if (!url) return null;
+  if (!url) return null
 
-  const match = url.match(/\/(\d+)\/?$/);
+  const match = url.match(/\/(\d+)\/?$/)
 
-  return match ? Number(match[1]) : null;
+  return match ? Number(match[1]) : null
 }
 
 function normalizeSwapiCharacter(character) {
@@ -31,7 +31,7 @@ function normalizeSwapiCharacter(character) {
     species: character.species || [],
     vehicles: character.vehicles || [],
     starships: character.starships || [],
-  };
+  }
 }
 
 function normalizeDatabankCharacter(character) {
@@ -40,7 +40,8 @@ function normalizeDatabankCharacter(character) {
     name: character.name,
     image: character.image || null,
     description: character.description || "",
-  };
+    source: "databank",
+  }
 }
 
 function normalizeName(name) {
@@ -51,45 +52,45 @@ function normalizeName(name) {
     .replace(/'/g, "")
     .replace(/-/g, " ")
     .replace(/\s+/g, " ")
-    .trim();
+    .trim()
 }
 
 async function getAllDatabankCharacters() {
-  const characters = [];
+  const characters = []
 
-  let page = 1;
-  const limit = 100;
+  let page = 1
+  const limit = 100
 
   while (true) {
-    const response = await getDatabankCharacters(page, limit);
+    const response = await getDatabankCharacters(page, limit)
 
     const data = Array.isArray(response)
       ? response
-      : response.data || response.results || [];
+      : response.data || response.results || []
 
-    characters.push(...data);
+    characters.push(...data)
 
-    const total = response.info?.total;
+    const total = response.info?.total
 
     if (!total || characters.length >= total || !data.length) {
-      break;
+      break
     }
 
-    page++;
+    page++
   }
 
-  return characters;
+  return characters
 }
 
 function findDatabankCharacter(name, databankCharacters) {
-  const normalizedName = normalizeName(name);
+  const normalizedName = normalizeName(name)
 
   const exactMatch = databankCharacters.find(
     (character) => normalizeName(character.name) === normalizedName,
-  );
+  )
 
   if (exactMatch) {
-    return normalizeDatabankCharacter(exactMatch);
+    return normalizeDatabankCharacter(exactMatch)
   }
 
   const ignoredWords = new Set([
@@ -110,96 +111,128 @@ function findDatabankCharacter(name, databankCharacters) {
     "queen",
     "princess",
     "prince",
-  ]);
+  ])
 
   const nameWords = normalizedName
     .split(" ")
-    .filter((word) => word.length > 2 && !ignoredWords.has(word));
+    .filter((word) => word.length > 2 && !ignoredWords.has(word))
 
   if (!nameWords.length) {
-    return null;
+    return null
   }
 
-  let bestMatch = null;
-  let bestScore = 0;
+  let bestMatch = null
+  let bestScore = 0
+  let hasTie = false
 
   for (const character of databankCharacters) {
-    const databankName = normalizeName(character.name);
+    const databankName = normalizeName(character.name)
 
     const databankWords = databankName
       .split(" ")
-      .filter((word) => word.length > 2 && !ignoredWords.has(word));
+      .filter((word) => word.length > 2 && !ignoredWords.has(word))
 
     const matchedWords = nameWords.filter((word) =>
       databankWords.includes(word),
-    );
+    )
 
-    const score = matchedWords.length;
+    const score = matchedWords.length
 
     if (score > bestScore) {
-      bestScore = score;
-      bestMatch = character;
+      bestScore = score
+      bestMatch = character
+      hasTie = false
+    } else if (score === bestScore && score > 0) {
+      hasTie = true
     }
   }
 
-  if (bestMatch && bestScore > 0) {
-    return normalizeDatabankCharacter(bestMatch);
+  if (bestMatch && bestScore >= 2 && !hasTie) {
+    return normalizeDatabankCharacter(bestMatch)
   }
 
-  return null;
+  return null
 }
 
 export async function getCharacters() {
   const [swapiData, databankCharacters] = await Promise.all([
     getPeople(),
     getAllDatabankCharacters(),
-  ]);
+  ])
 
   const swapiCharacters = Array.isArray(swapiData)
     ? swapiData
-    : swapiData.results || [];
+    : swapiData.results || []
 
-  const characters = swapiCharacters
-    .map((character) => {
-      const swapiCharacter = normalizeSwapiCharacter(character);
+  // Personagens da SWAPI combinados com o Databank
+  const mergedCharacters = swapiCharacters.map((character) => {
+    const swapiCharacter = normalizeSwapiCharacter(character)
 
-      const databankCharacter = findDatabankCharacter(
-        swapiCharacter.name,
-        databankCharacters,
-      );
+    const databankCharacter = findDatabankCharacter(
+      swapiCharacter.name,
+      databankCharacters,
+    )
 
-      if (!databankCharacter) {
-        return null;
-      }
+    return {
+      ...swapiCharacter,
+      image: databankCharacter?.image ?? null,
+      description: databankCharacter?.description ?? "",
+      source: "swapi",
+    }
+  })
 
-      return {
-        ...swapiCharacter,
-        image: databankCharacter.image,
-        description: databankCharacter.description,
-      };
-    })
-    .filter(Boolean);
+  // Identifica personagens do Databank que ainda não foram associados
+  const unmatchedDatabank = databankCharacters.filter((databankCharacter) => {
+    return !mergedCharacters.some(
+      (swapiCharacter) =>
+        findDatabankCharacter(swapiCharacter.name, [databankCharacter]) !==
+        null,
+    )
+  })
 
-  return characters;
+  // Adiciona os personagens exclusivos do Databank
+  const databankOnlyCharacters = unmatchedDatabank.map((character) => ({
+    ...normalizeDatabankCharacter(character),
+    height: null,
+    mass: null,
+    hair_color: null,
+    skin_color: null,
+    eye_color: null,
+    birth_year: null,
+    gender: null,
+    homeworld: null,
+    films: [],
+    species: [],
+    vehicles: [],
+    starships: [],
+  }))
+
+  return [...mergedCharacters, ...databankOnlyCharacters]
 }
 
 export async function getCharacter(id) {
   const [character, databankCharacters] = await Promise.all([
     getPerson(id),
     getAllDatabankCharacters(),
-  ]);
+  ])
 
-  const swapiCharacter = normalizeSwapiCharacter(character);
+  const swapiCharacter = normalizeSwapiCharacter(character)
 
   const databankCharacter = findDatabankCharacter(
     swapiCharacter.name,
     databankCharacters,
-  );
+  )
 
   return {
     ...swapiCharacter,
 
     image: databankCharacter?.image ?? null,
     description: databankCharacter?.description ?? "",
-  };
+  }
+}
+
+export async function getMovies() {
+  const data = await getFilms()
+
+  return Array.isArray(data) ? data : data.results || []
 }

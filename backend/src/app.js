@@ -7,6 +7,7 @@ import cors from "cors"
 
 import charactersRouter from "./routes/characters.js"
 import characterRouter from "./routes/character.js"
+import moviesRoutes from "./routes/movies.js"
 
 const app = express()
 
@@ -19,5 +20,6 @@ app.get("/", (req, res) => {
 
 app.use("/characters", charactersRouter)
 app.use("/character", characterRouter)
+app.use("/movies", moviesRoutes)
 
 export default app

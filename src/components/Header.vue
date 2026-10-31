@@ -33,7 +33,7 @@
 const items = [
   { name: "Home", title: "Home", route: "/" },
   { name: "Characters", title: "Personagens", route: "/" },
-  { name: "Movies", title: "Filmes", route: "/" },
+  { name: "Movies", title: "Filmes", route: "/movies" },
   { name: "Planets", title: "Planetas", route: "/" },
   { name: "Ships", title: "Naves", route: "/" },
   { name: "Vehicle", title: "Veiculos", route: "/" },

@@ -18,8 +18,8 @@ export function getCharacter(id) {
   return request(`/character/${id}`);
 }
 
-export function getFilms() {
-  return request("/films");
+export function getMovies() {
+  return request("/movies");
 }
 
 export function getPlanets() {

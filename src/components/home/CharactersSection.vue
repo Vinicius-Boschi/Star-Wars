@@ -20,7 +20,7 @@
         <div class="cards__media">
           <img
             v-if="character.image"
-            :src="character.image"
+            :src="character.image || NotFound"
             :alt="character.name"
             loading="lazy"
             class="cards__image"
@@ -62,6 +62,8 @@
 import { computed, onMounted, ref } from "vue"
 import { getCharacters } from "../../services/starWarsApi"
 import { useFavorites } from "../../composables/useFavorites"
+
+import NotFound from "../../assets/images/not-found.jpg"
 
 const { loadFavorites, isFavorite, toggleFavorite } = useFavorites()
 
