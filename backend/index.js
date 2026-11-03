@@ -4,7 +4,8 @@ import cors from "cors"
 
 import charactersRouter from "./src/routes/characters.js"
 import characterRouter from "./src/routes/character.js"
-import moviesRoutes from "./src/routes/movies.js"
+import moviesRouter from "./src/routes/movies.js"
+import planetsRouter from "./src/routes/planets.js"
 
 const app = express()
 
@@ -22,6 +23,7 @@ app.get("/", (req, res) => {
 
 app.use("/characters", charactersRouter)
 app.use("/character", characterRouter)
-app.use("/movies", moviesRoutes)
+app.use("/movies", moviesRouter)
+app.use("/planets", planetsRouter)
 
 export default app

@@ -21,3 +21,7 @@ export async function getPerson(id) {
 export async function getFilms() {
   return request("/films")
 }
+
+export async function getPlanets() {
+  return request("/planets")
+}

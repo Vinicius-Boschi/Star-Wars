@@ -6,6 +6,7 @@
       @open-character="openCharacter"
     />
     <Movies @open-movie="openMovie" />
+    <Planets @open-planet="openPlanet" />
     <Modal
       :is-open="!!selectedItem"
       :selected-item="selectedItem"
@@ -21,6 +22,7 @@ import Banner from "../components/home/HomeBanner.vue"
 import CharactersSection from "../components/home/CharactersSection.vue"
 import Movies from "../components/home/Movies.vue"
 import Modal from "../components/Modal.vue"
+import Planets from "../components/home/Planets.vue"  
 
 const selectedItem = ref(null)
 const charactersSection = ref(null)
@@ -46,6 +48,10 @@ function openCharacter(character) {
 
 function openMovie(movie) {
   openItem(movie, "movie")
+}
+
+function openPlanet(planet) {
+  openItem(planet, "planet")
 }
 
 function closeModal() {

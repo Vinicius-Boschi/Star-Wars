@@ -1,4 +1,4 @@
-import { getPeople, getPerson, getFilms } from "../providers/swapi.js"
+import { getPeople, getPerson, getFilms, getPlanets } from "../providers/swapi.js"
 import { getCharacters as getDatabankCharacters } from "../providers/databank.js"
 import { getAkababCharacters } from "../providers/akabab.js"
 
@@ -257,6 +257,12 @@ export async function getCharacter(id) {
 
 export async function getMovies() {
   const data = await getFilms()
+
+  return Array.isArray(data) ? data : data.results || []
+}
+
+export async function getPlanet() {
+  const data = await getPlanets()
 
   return Array.isArray(data) ? data : data.results || []
 }

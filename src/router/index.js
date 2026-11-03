@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router"
 
 import Home from "../views/Home.vue"
 import Movies from "../components/home/Movies.vue"
+import Planets from "../components/home/Planets.vue"
 import Favorites from "../views/Favorites.vue"
 
 const router = createRouter({
@@ -14,13 +15,18 @@ const router = createRouter({
     },
     {
       path: "/favorites",
-      name: "Favoritos",
+      name: "Favorites",
       component: Favorites,
     },
     {
       path: "/movies",
-      name: "Filmes",
+      name: "Movies",
       component: Movies,
+    },
+        {
+      path: "/planets",
+      name: "Planets",
+      component: Planets,
     },
   ],
 })

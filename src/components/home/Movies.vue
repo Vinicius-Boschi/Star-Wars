@@ -85,7 +85,7 @@ async function loadMovies() {
   }
 }
 
-// Navegação até os personagens
+// Navegation to the characters 
 function scrollToMovies() {
   moviesSection.value?.scrollIntoView({
     behavior: "smooth",
