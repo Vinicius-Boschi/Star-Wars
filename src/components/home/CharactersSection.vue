@@ -1,11 +1,11 @@
 <template>
   <section ref="charactersSection" class="cards__featured">
     <div class="cards__heading">
-      <h2>Personagens em Destaque</h2>
-      <a href="#">Ver Todos</a>
+      <h2>Highlight Characters</h2>
+      <a href="#">See all</a>
     </div>
 
-    <p v-if="loading" class="cards__status">Carregando personagens...</p>
+    <p v-if="loading" class="cards__status">Loading Characters...</p>
 
     <p v-else-if="error" class="cards__status cards__status--error">
       {{ error }}
@@ -50,7 +50,7 @@
             class="cards__button"
             @click="openCharacter(character)"
           >
-            Ver detalhes
+            See Details
           </button>
         </div>
       </article>

@@ -1,11 +1,11 @@
 <template>
   <section ref="moviesSection" class="cards__featured">
     <div class="cards__heading">
-      <h2>Filmes em Destaque</h2>
-      <a href="#">Ver Todos</a>
+      <h2>Highlight Movies</h2>
+      <a href="#">See all</a>
     </div>
 
-    <p v-if="loading" class="cards__status">Carregando filmes...</p>
+    <p v-if="loading" class="cards__status">Loading Movies...</p>
 
     <p v-else-if="error" class="cards__status cards__status--error">
       {{ error }}
@@ -42,7 +42,7 @@
           <h2>{{ movie.title }}</h2>
 
           <button type="button" class="cards__button" @click="openMovie(movie)">
-            Ver detalhes
+            See Details
           </button>
         </div>
       </article>

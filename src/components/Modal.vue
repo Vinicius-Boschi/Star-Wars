@@ -37,65 +37,65 @@
           <!-- Personagens -->
           <template v-if="selectedItem.type === 'character'">
             <li v-if="selectedItem.height">
-              <strong>Altura:</strong> {{ selectedItem.height }}
+              <strong>Height:</strong> {{ selectedItem.height }}
             </li>
 
             <li v-if="selectedItem.mass">
-              <strong>Peso:</strong> {{ selectedItem.mass }}
+              <strong>Mass:</strong> {{ selectedItem.mass }}
             </li>
 
             <li v-if="selectedItem.gender">
-              <strong>Gênero:</strong> {{ selectedItem.gender }}
+              <strong>Gender:</strong> {{ selectedItem.gender }}
             </li>
 
             <li v-if="selectedItem.birth_year">
-              <strong>Nascimento:</strong> {{ selectedItem.birth_year }}
+              <strong>Birth Year:</strong> {{ selectedItem.birth_year }}
             </li>
           </template>
 
           <!-- Filmes -->
           <template v-else-if="selectedItem.type === 'movie'">
             <li v-if="selectedItem.release_date">
-              <strong>Lançamento:</strong> {{ selectedItem.release_date }}
+              <strong>Release Date:</strong> {{ selectedItem.release_date }}
             </li>
 
             <li v-if="selectedItem.director">
-              <strong>Diretor:</strong> {{ selectedItem.director }}
+              <strong>Director:</strong> {{ selectedItem.director }}
             </li>
 
             <li v-if="selectedItem.producer">
-              <strong>Produtor:</strong> {{ selectedItem.producer }}
+              <strong>Producer:</strong> {{ selectedItem.producer }}
             </li>
           </template>
 
           <!-- Planetas -->
           <template v-else-if="selectedItem.type === 'planet'">
             <li v-if="selectedItem.climate">
-              <strong>Clima:</strong> {{ selectedItem.climate }}
+              <strong>Weather:</strong> {{ selectedItem.climate }}
             </li>
 
             <li v-if="selectedItem.terrain">
-              <strong>Terreno:</strong> {{ selectedItem.terrain }}
+              <strong>Terrain:</strong> {{ selectedItem.terrain }}
             </li>
 
             <li v-if="selectedItem.population">
-              <strong>População:</strong> {{ selectedItem.population }}
+              <strong>Population:</strong> {{ selectedItem.population }}
             </li>
           </template>
 
           <!-- Espécies -->
           <template v-else-if="selectedItem.type === 'species'">
             <li v-if="selectedItem.classification">
-              <strong>Classificação:</strong>
+              <strong>Classification:</strong>
               {{ selectedItem.classification }}
             </li>
 
             <li v-if="selectedItem.language">
-              <strong>Idioma:</strong> {{ selectedItem.language }}
+              <strong>Language:</strong> {{ selectedItem.language }}
             </li>
 
             <li v-if="selectedItem.average_lifespan">
-              <strong>Expectativa de vida:</strong>
+              <strong>Average Lifespan:</strong>
               {{ selectedItem.average_lifespan }}
             </li>
           </template>
@@ -103,19 +103,19 @@
           <!-- Naves -->
           <template v-else-if="selectedItem.type === 'starship'">
             <li v-if="selectedItem.model">
-              <strong>Modelo:</strong> {{ selectedItem.model }}
+              <strong>Model:</strong> {{ selectedItem.model }}
             </li>
 
             <li v-if="selectedItem.manufacturer">
-              <strong>Fabricante:</strong> {{ selectedItem.manufacturer }}
+              <strong>Manufacturer:</strong> {{ selectedItem.manufacturer }}
             </li>
 
             <li v-if="selectedItem.starship_class">
-              <strong>Classe:</strong> {{ selectedItem.starship_class }}
+              <strong>Class:</strong> {{ selectedItem.starship_class }}
             </li>
 
             <li v-if="selectedItem.max_atmosphering_speed">
-              <strong>Velocidade:</strong>
+              <strong>Max Atmosphering Speed:</strong>
               {{ selectedItem.max_atmosphering_speed }}
             </li>
           </template>
@@ -123,19 +123,19 @@
           <!-- Veículos -->
           <template v-else-if="selectedItem.type === 'vehicle'">
             <li v-if="selectedItem.model">
-              <strong>Modelo:</strong> {{ selectedItem.model }}
+              <strong>Model:</strong> {{ selectedItem.model }}
             </li>
 
             <li v-if="selectedItem.manufacturer">
-              <strong>Fabricante:</strong> {{ selectedItem.manufacturer }}
+              <strong>Manufacturer:</strong> {{ selectedItem.manufacturer }}
             </li>
 
             <li v-if="selectedItem.vehicle_class">
-              <strong>Classe:</strong> {{ selectedItem.vehicle_class }}
+              <strong>Class:</strong> {{ selectedItem.vehicle_class }}
             </li>
 
             <li v-if="selectedItem.max_atmosphering_speed">
-              <strong>Velocidade:</strong>
+              <strong>Max Atmosphering Speed:</strong>
               {{ selectedItem.max_atmosphering_speed }}
             </li>
           </template>

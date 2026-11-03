@@ -10,13 +10,13 @@
 
         <div class="banner__content">
           <h1 class="banner__title">
-            Explore o
-            <span>universo star wars</span>
+            Explore the
+            <span>universe star wars</span>
           </h1>
 
           <p>
-            Descubra personagens, planetas, naves, veículos e tudo sobre a saga
-            que conquistou gerações.
+            Discover characters, planets, ships, vehicles and everything about the saga
+            that conquered generations.
           </p>
 
           <button
@@ -24,7 +24,7 @@
             type="button"
             @click="emit('explore')"
           >
-            Explorar agora
+            Explore now
           </button>
         </div>
       </header>
