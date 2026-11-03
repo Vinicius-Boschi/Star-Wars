@@ -1,5 +1,4 @@
 import dotenv from "dotenv"
-
 dotenv.config()
 
 import express from "express"
@@ -11,7 +10,17 @@ import moviesRoutes from "./routes/movies.js"
 
 const app = express()
 
-app.use(cors())
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://star-wars-src.vercel.app",
+]
+
+app.use(
+  cors({
+    origin: allowedOrigins,
+  }),
+)
+
 app.use(express.json())
 
 app.get("/", (req, res) => {
