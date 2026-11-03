@@ -1,5 +1,6 @@
 import { getPeople, getPerson, getFilms } from "../providers/swapi.js"
 import { getCharacters as getDatabankCharacters } from "../providers/databank.js"
+import { getAkababCharacters } from "../providers/akabab.js"
 
 function extractIdFromUrl(url) {
   if (!url) return null
@@ -154,15 +155,32 @@ function findDatabankCharacter(name, databankCharacters) {
   return null
 }
 
+function findAkababCharacter(name, akababCharacters) {
+  const normalizedName = normalizeName(name)
+
+  const exactMatch = akababCharacters.find(
+    (character) => normalizeName(character.name) === normalizedName,
+  )
+
+  if (exactMatch) {
+    return exactMatch
+  }
+
+  return null
+}
+
 export async function getCharacters() {
-  const [swapiData, databankCharacters] = await Promise.all([
+  const [swapiData, databankCharacters, akababCharacters] = await Promise.all([
     getPeople(),
     getAllDatabankCharacters(),
+    getAkababCharacters(),
   ])
 
   const swapiCharacters = Array.isArray(swapiData)
     ? swapiData
     : swapiData.results || []
+
+  const usedDatabankIds = new Set()
 
   // Personagens da SWAPI combinados com o Databank
   const mergedCharacters = swapiCharacters.map((character) => {
@@ -173,47 +191,49 @@ export async function getCharacters() {
       databankCharacters,
     )
 
+    const akababCharacter = findAkababCharacter(
+      swapiCharacter.name,
+      akababCharacters,
+    )
+
+    if (databankCharacter) {
+      usedDatabankIds.add(databankCharacter.id)
+    }
+
     return {
       ...swapiCharacter,
-      image: databankCharacter?.image ?? null,
-      description: databankCharacter?.description ?? "",
-      source: "swapi",
+      image: akababCharacter?.image || databankCharacter?.image || null,
+      description: databankCharacter?.description || "",
     }
   })
 
-  // Identifica personagens do Databank que ainda não foram associados
-  const unmatchedDatabank = databankCharacters.filter((databankCharacter) => {
-    return !mergedCharacters.some(
-      (swapiCharacter) =>
-        findDatabankCharacter(swapiCharacter.name, [databankCharacter]) !==
-        null,
-    )
-  })
-
   // Adiciona os personagens exclusivos do Databank
-  const databankOnlyCharacters = unmatchedDatabank.map((character) => ({
-    ...normalizeDatabankCharacter(character),
-    height: null,
-    mass: null,
-    hair_color: null,
-    skin_color: null,
-    eye_color: null,
-    birth_year: null,
-    gender: null,
-    homeworld: null,
-    films: [],
-    species: [],
-    vehicles: [],
-    starships: [],
-  }))
+  const databankOnlyCharacters = databankCharacters
+    .filter((character) => !usedDatabankIds.has(character._id))
+    .map((character) => ({
+      ...normalizeDatabankCharacter(character),
+      height: null,
+      mass: null,
+      hair_color: null,
+      skin_color: null,
+      eye_color: null,
+      birth_year: null,
+      gender: null,
+      homeworld: null,
+      films: [],
+      species: [],
+      vehicles: [],
+      starships: [],
+    }))
 
   return [...mergedCharacters, ...databankOnlyCharacters]
 }
 
 export async function getCharacter(id) {
-  const [character, databankCharacters] = await Promise.all([
+  const [character, databankCharacters, akababCharacters] = await Promise.all([
     getPerson(id),
     getAllDatabankCharacters(),
+    getAkababCharacters(),
   ])
 
   const swapiCharacter = normalizeSwapiCharacter(character)
@@ -223,11 +243,15 @@ export async function getCharacter(id) {
     databankCharacters,
   )
 
+  const akababCharacter = await findAkababCharacter(
+    swapiCharacter.name,
+    akababCharacters,
+  )
+
   return {
     ...swapiCharacter,
-
-    image: databankCharacter?.image ?? null,
-    description: databankCharacter?.description ?? "",
+    image: akababCharacter?.image || databankCharacter?.image || null,
+    description: databankCharacter?.description || "",
   }
 }
 

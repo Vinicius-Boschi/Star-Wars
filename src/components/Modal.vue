@@ -1,11 +1,11 @@
 <template>
-  <div v-if="isOpen && selectedCharacter" class="modal">
+  <div v-if="isOpen && selectedItem" class="modal">
     <div class="modal__container" @click.self="$emit('close')">
       <div
         class="modal__content"
         role="dialog"
         aria-modal="true"
-        :aria-label="`Detalhes de ${selectedCharacter.name}`"
+        :aria-label="`Detalhes de ${selectedItem.name}`"
       >
         <button
           class="modal__close"
@@ -17,122 +17,122 @@
         </button>
 
         <img
-          v-if="selectedCharacter.image || NotFound"
-          :src="selectedCharacter.image || NotFound"
-          :alt="selectedCharacter.name"
+          v-if="selectedItem.image || NotFound"
+          :src="selectedItem.image || NotFound"
+          :alt="selectedItem.name"
           class="modal__image"
         />
 
-        <h2>{{ selectedCharacter.name }}</h2>
+        <h2>{{ selectedItem.name }}</h2>
 
         <span class="modal__type">
-          {{ selectedCharacter.type }}
+          {{ selectedItem.type }}
         </span>
 
         <ul class="modal__info">
           <!-- Personagens -->
-          <template v-if="selectedCharacter.type === 'character'">
-            <li v-if="selectedCharacter.height">
-              <strong>Altura:</strong> {{ selectedCharacter.height }}
+          <template v-if="selectedItem.type === 'character'">
+            <li v-if="selectedItem.height">
+              <strong>Altura:</strong> {{ selectedItem.height }}
             </li>
 
-            <li v-if="selectedCharacter.mass">
-              <strong>Peso:</strong> {{ selectedCharacter.mass }}
+            <li v-if="selectedItem.mass">
+              <strong>Peso:</strong> {{ selectedItem.mass }}
             </li>
 
-            <li v-if="selectedCharacter.gender">
-              <strong>Gênero:</strong> {{ selectedCharacter.gender }}
+            <li v-if="selectedItem.gender">
+              <strong>Gênero:</strong> {{ selectedItem.gender }}
             </li>
 
-            <li v-if="selectedCharacter.birth_year">
-              <strong>Nascimento:</strong> {{ selectedCharacter.birth_year }}
+            <li v-if="selectedItem.birth_year">
+              <strong>Nascimento:</strong> {{ selectedItem.birth_year }}
             </li>
           </template>
 
           <!-- Filmes -->
-          <template v-else-if="selectedCharacter.type === 'movie'">
-            <li v-if="selectedCharacter.release_date">
-              <strong>Lançamento:</strong> {{ selectedCharacter.release_date }}
+          <template v-else-if="selectedItem.type === 'movie'">
+            <li v-if="selectedItem.release_date">
+              <strong>Lançamento:</strong> {{ selectedItem.release_date }}
             </li>
 
-            <li v-if="selectedCharacter.director">
-              <strong>Diretor:</strong> {{ selectedCharacter.director }}
+            <li v-if="selectedItem.director">
+              <strong>Diretor:</strong> {{ selectedItem.director }}
             </li>
 
-            <li v-if="selectedCharacter.producer">
-              <strong>Produtor:</strong> {{ selectedCharacter.producer }}
+            <li v-if="selectedItem.producer">
+              <strong>Produtor:</strong> {{ selectedItem.producer }}
             </li>
           </template>
 
           <!-- Planetas -->
-          <template v-else-if="selectedCharacter.type === 'planet'">
-            <li v-if="selectedCharacter.climate">
-              <strong>Clima:</strong> {{ selectedCharacter.climate }}
+          <template v-else-if="selectedItem.type === 'planet'">
+            <li v-if="selectedItem.climate">
+              <strong>Clima:</strong> {{ selectedItem.climate }}
             </li>
 
-            <li v-if="selectedCharacter.terrain">
-              <strong>Terreno:</strong> {{ selectedCharacter.terrain }}
+            <li v-if="selectedItem.terrain">
+              <strong>Terreno:</strong> {{ selectedItem.terrain }}
             </li>
 
-            <li v-if="selectedCharacter.population">
-              <strong>População:</strong> {{ selectedCharacter.population }}
+            <li v-if="selectedItem.population">
+              <strong>População:</strong> {{ selectedItem.population }}
             </li>
           </template>
 
           <!-- Espécies -->
-          <template v-else-if="selectedCharacter.type === 'species'">
-            <li v-if="selectedCharacter.classification">
+          <template v-else-if="selectedItem.type === 'species'">
+            <li v-if="selectedItem.classification">
               <strong>Classificação:</strong>
-              {{ selectedCharacter.classification }}
+              {{ selectedItem.classification }}
             </li>
 
-            <li v-if="selectedCharacter.language">
-              <strong>Idioma:</strong> {{ selectedCharacter.language }}
+            <li v-if="selectedItem.language">
+              <strong>Idioma:</strong> {{ selectedItem.language }}
             </li>
 
-            <li v-if="selectedCharacter.average_lifespan">
+            <li v-if="selectedItem.average_lifespan">
               <strong>Expectativa de vida:</strong>
-              {{ selectedCharacter.average_lifespan }}
+              {{ selectedItem.average_lifespan }}
             </li>
           </template>
 
           <!-- Naves -->
-          <template v-else-if="selectedCharacter.type === 'starship'">
-            <li v-if="selectedCharacter.model">
-              <strong>Modelo:</strong> {{ selectedCharacter.model }}
+          <template v-else-if="selectedItem.type === 'starship'">
+            <li v-if="selectedItem.model">
+              <strong>Modelo:</strong> {{ selectedItem.model }}
             </li>
 
-            <li v-if="selectedCharacter.manufacturer">
-              <strong>Fabricante:</strong> {{ selectedCharacter.manufacturer }}
+            <li v-if="selectedItem.manufacturer">
+              <strong>Fabricante:</strong> {{ selectedItem.manufacturer }}
             </li>
 
-            <li v-if="selectedCharacter.starship_class">
-              <strong>Classe:</strong> {{ selectedCharacter.starship_class }}
+            <li v-if="selectedItem.starship_class">
+              <strong>Classe:</strong> {{ selectedItem.starship_class }}
             </li>
 
-            <li v-if="selectedCharacter.max_atmosphering_speed">
+            <li v-if="selectedItem.max_atmosphering_speed">
               <strong>Velocidade:</strong>
-              {{ selectedCharacter.max_atmosphering_speed }}
+              {{ selectedItem.max_atmosphering_speed }}
             </li>
           </template>
 
           <!-- Veículos -->
-          <template v-else-if="selectedCharacter.type === 'vehicle'">
-            <li v-if="selectedCharacter.model">
-              <strong>Modelo:</strong> {{ selectedCharacter.model }}
+          <template v-else-if="selectedItem.type === 'vehicle'">
+            <li v-if="selectedItem.model">
+              <strong>Modelo:</strong> {{ selectedItem.model }}
             </li>
 
-            <li v-if="selectedCharacter.manufacturer">
-              <strong>Fabricante:</strong> {{ selectedCharacter.manufacturer }}
+            <li v-if="selectedItem.manufacturer">
+              <strong>Fabricante:</strong> {{ selectedItem.manufacturer }}
             </li>
 
-            <li v-if="selectedCharacter.vehicle_class">
-              <strong>Classe:</strong> {{ selectedCharacter.vehicle_class }}
+            <li v-if="selectedItem.vehicle_class">
+              <strong>Classe:</strong> {{ selectedItem.vehicle_class }}
             </li>
 
-            <li v-if="selectedCharacter.max_atmosphering_speed">
+            <li v-if="selectedItem.max_atmosphering_speed">
               <strong>Velocidade:</strong>
-              {{ selectedCharacter.max_atmosphering_speed }}
+              {{ selectedItem.max_atmosphering_speed }}
             </li>
           </template>
         </ul>
@@ -149,7 +149,7 @@ defineProps({
     type: Boolean,
     default: false,
   },
-  selectedCharacter: {
+  selectedItem: {
     type: Object,
     default: null,
   },

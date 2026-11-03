@@ -19,11 +19,11 @@
       >
         <div class="cards__media">
           <img
-            v-if="character.image"
             :src="character.image || NotFound"
             :alt="character.name"
             loading="lazy"
             class="cards__image"
+            @error="$event.target.src = NotFound"
           />
 
           <button
