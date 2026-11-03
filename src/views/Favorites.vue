@@ -1,10 +1,10 @@
 <template>
   <section class="cards__featured">
     <div class="cards__heading">
-      <h2>Meus Favoritos</h2>
+      <h2>My Favorites</h2>
     </div>
 
-    <p v-if="favorites.length === 0">Você ainda não possui favoritos.</p>
+    <p v-if="favorites.length === 0">You don't have any favorites yet.</p>
 
     <div v-else id="favorites" class="cards__grid">
       <article
@@ -14,10 +14,15 @@
       >
         <div class="cards__media">
           <img
-            :src="favorite.image"
-            :alt="favorite.name"
+            :src="
+              favorite.type === 'movie'
+                ? movieImages[favorite.episode_id] || NotFound
+                : favorite.image || NotFound
+            "
+            :alt="favorite.name || favorite.title"
             loading="lazy"
             class="cards__image"
+            @error="$event.target.src = NotFound"
           />
 
           <button
@@ -26,7 +31,7 @@
               'cards__favorite--active': isFavorite(favorite.id, favorite.type),
             }"
             type="button"
-            aria-label="Remover dos favoritos"
+            aria-label="Remove from favorites"
             @click="toggleFavorite(favorite, favorite.type)"
           >
             <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -38,13 +43,13 @@
         </div>
 
         <div class="cards__content">
-          <h2>{{ favorite.name }}</h2>
+          <h2>{{ favorite.name || favorite.title }}</h2>
           <button
             type="button"
             class="cards__button"
             @click="openFavorite(favorite)"
           >
-            Ver detalhes
+            View Details
           </button>
         </div>
       </article>
@@ -58,24 +63,27 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
-import { useFavorites } from "../composables/useFavorites";
+import { onMounted, ref } from "vue"
+import { useFavorites } from "../composables/useFavorites"
+import { movieImages } from "../untils/movieImages"
 
-import Modal from "../components/Modal.vue";
+import NotFound from "../assets/images/not-found.jpg"
 
-const { favorites, loadFavorites, isFavorite, toggleFavorite } = useFavorites();
+import Modal from "../components/Modal.vue"
 
-const selectedFavorite = ref(null);
+const { favorites, loadFavorites, isFavorite, toggleFavorite } = useFavorites()
+
+const selectedFavorite = ref(null)
 
 function openFavorite(favorite) {
-  selectedFavorite.value = favorite;
+  selectedFavorite.value = favorite
 }
 
 function closeFavorite() {
-  selectedFavorite.value = null;
+  selectedFavorite.value = null
 }
 
 onMounted(() => {
-  loadFavorites();
-});
+  loadFavorites()
+})
 </script>

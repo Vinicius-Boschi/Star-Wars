@@ -5,7 +5,7 @@
         class="modal__content"
         role="dialog"
         aria-modal="true"
-        :aria-label="`Detalhes de ${selectedItem.name}`"
+        :aria-label="`Detalhes de ${selectedItem.title || selectedItem.name}`"
       >
         <button
           class="modal__close"
@@ -17,13 +17,17 @@
         </button>
 
         <img
-          v-if="selectedItem.image || NotFound"
-          :src="selectedItem.image || NotFound"
-          :alt="selectedItem.name"
+          :src="
+            selectedItem.type === 'movie'
+              ? movieImages[selectedItem.episode_id] || NotFound
+              : selectedItem.image || NotFound
+          "
+          :alt="selectedItem.title || selectedItem.name"
           class="modal__image"
+          @error="$event.target.src = NotFound"
         />
 
-        <h2>{{ selectedItem.name }}</h2>
+        <h2>{{ selectedItem.title || selectedItem.name }}</h2>
 
         <span class="modal__type">
           {{ selectedItem.type }}
@@ -142,6 +146,7 @@
 </template>
 
 <script setup>
+import { movieImages } from "../untils/movieImages"
 import NotFound from "../assets/images/not-found.jpg"
 
 defineProps({

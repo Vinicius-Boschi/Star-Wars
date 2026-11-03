@@ -15,10 +15,11 @@
       <article v-for="movie in cards" :key="movie.id" class="cards__item">
         <div class="cards__media">
           <img
-            :src="movie.image || NotFound"
-            :alt="movie.name || movie.title"
+            :src="movieImages[movie.episode_id] || NotFound"
+            :alt="movie.title"
             loading="lazy"
             class="cards__image"
+            @error="$event.target.src = NotFound"
           />
 
           <button
@@ -38,7 +39,7 @@
         </div>
 
         <div class="cards__content">
-          <h2>{{ movie.name || movie.title }}</h2>
+          <h2>{{ movie.title }}</h2>
 
           <button type="button" class="cards__button" @click="openMovie(movie)">
             Ver detalhes
@@ -53,6 +54,7 @@
 import { computed, onMounted, ref } from "vue"
 import { getMovies } from "../../services/starWarsApi"
 import { useFavorites } from "../../composables/useFavorites"
+import { movieImages } from "../../untils/movieImages"
 
 import NotFound from "../../assets/images/not-found.jpg"
 
