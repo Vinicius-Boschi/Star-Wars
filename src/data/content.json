@@ -1,0 +1,112 @@
+{
+  "planets": [
+    {
+      "id": 1,
+      "name": "Tatooine",
+      "image": "Tatooine"
+    },
+    {
+      "id": 2,
+      "name": "Alderaan",
+      "image": "Alderaan"
+    },
+    {
+      "id": 3,
+      "name": "Yavin IV",
+      "image": "Yavin_IV"
+    },
+    {
+      "id": 4,
+      "name": "Utapau",
+      "image": "Utapau"
+    },
+
+    {
+      "id": 5,
+      "name": "Polis Massa",
+      "image": "Polis_Massa"
+    },
+    {
+      "id": 6,
+      "name": "Naboo",
+      "image": "Naboo"
+    },
+    {
+      "id": 7,
+      "name": "Mustafar",
+      "image": "Mustafar"
+    },
+    {
+      "id": 8,
+      "name": "Kashyyyk",
+      "image": "Kashyyyk"
+    },
+    {
+      "id": 9,
+      "name": "Kamino",
+      "image": "Kamino"
+    },
+    {
+      "id": 10,
+      "name": "Hoth",
+      "image": "Hoth"
+    },
+    {
+      "id": 11,
+      "name": "Geonosis",
+      "image": "Geonosis"
+    },
+    {
+      "id": 12,
+      "name": "Dagobah",
+      "image": "Dagobah"
+    },
+    {
+      "id": 13,
+      "name": "Endor",
+      "image": "Endor"
+    },
+    {
+      "id": 14,
+      "name": "Bespin",
+      "image": "Bespin"
+    },
+    {
+      "id": 15,
+      "name": "Coruscant",
+      "image": "Coruscant"
+    }
+  ],
+  "movies": [
+    {
+      "id": 1,
+      "title": "The Phantom Menace",
+      "image": "The_Phantom_Menace"
+    },
+    {
+      "id": 2,
+      "title": "The Empire Strikes Back",
+      "image": "The_Empire_Strikes_Back"
+    },
+    {
+      "id": 3,
+      "title": "Return of the Jedi",
+      "image": "Return_Of_The_Jedi"
+    },
+    {
+      "id": 4,
+      "title": "Revenge of the Sith",
+      "image": "Revenge_Of_the_Sith"
+    },
+    {
+      "id": 5,
+      "title": "A New Hope",
+      "image": "A_New_Hope"
+    },
+    {
+      "id": 6,
+      "title": "Attack of the Clones",
+      "image": "Attack_Of_The_Clones"
+    }
+  ]
+}

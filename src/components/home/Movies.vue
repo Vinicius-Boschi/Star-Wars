@@ -15,7 +15,7 @@
       <article v-for="movie in cards" :key="movie.id" class="cards__item">
         <div class="cards__media">
           <img
-            :src="movieImages[movie.episode_id] || NotFound"
+            :src="movie.image ? getCloudinaryImage(movie.image) : NotFound"
             :alt="movie.title"
             loading="lazy"
             class="cards__image"
@@ -54,8 +54,8 @@
 import { computed, onMounted, ref } from "vue"
 import { getMovies } from "../../services/starWarsApi"
 import { useFavorites } from "../../composables/useFavorites"
-import { movieImages } from "../../untils/movieImages"
-
+import { getCloudinaryImage } from "../../services/cloudinary"
+import content from "../../data/content.json"
 import NotFound from "../../assets/images/not-found.jpg"
 
 const { loadFavorites, isFavorite, toggleFavorite } = useFavorites()
@@ -76,16 +76,24 @@ async function loadMovies() {
   try {
     const data = await getMovies()
 
-    movies.value = Array.isArray(data) ? data : data.results || []
+    const apiMovies = Array.isArray(data) ? data : data?.results || []
+
+    movies.value = apiMovies.map((movie) => ({
+      ...movie,
+      id: movie.episode_id,
+      image:
+        content.movies.find((item) => item.title === movie.title)?.image ||
+        NotFound,
+    }))
   } catch (err) {
     console.error(err)
-    error.value = "Erro ao carregar os filmes."
+    error.value = "Error to loading movies."
   } finally {
     loading.value = false
   }
 }
 
-// Navegation to the characters 
+// Navegation to the characters
 function scrollToMovies() {
   moviesSection.value?.scrollIntoView({
     behavior: "smooth",

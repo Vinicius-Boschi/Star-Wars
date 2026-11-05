@@ -15,8 +15,10 @@
         <div class="cards__media">
           <img
             :src="
-              favorite.type === 'movie'
-                ? movieImages[favorite.episode_id] || NotFound
+              favorite.type === 'movie' || favorite.type === 'planet'
+                ? favorite.image
+                  ? getCloudinaryImage(favorite.image)
+                  : NotFound
                 : favorite.image || NotFound
             "
             :alt="favorite.name || favorite.title"
@@ -56,7 +58,7 @@
     </div>
     <Modal
       :is-open="!!selectedFavorite"
-      :selected-character="selectedFavorite"
+      :selected-item="selectedFavorite"
       @close="closeFavorite"
     />
   </section>
@@ -65,10 +67,9 @@
 <script setup>
 import { onMounted, ref } from "vue"
 import { useFavorites } from "../composables/useFavorites"
-import { movieImages } from "../untils/movieImages"
+import { getCloudinaryImage } from "../services/cloudinary.js"
 
 import NotFound from "../assets/images/not-found.jpg"
-
 import Modal from "../components/Modal.vue"
 
 const { favorites, loadFavorites, isFavorite, toggleFavorite } = useFavorites()

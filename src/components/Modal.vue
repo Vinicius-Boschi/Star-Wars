@@ -18,8 +18,8 @@
 
         <img
           :src="
-            selectedItem.type === 'movie'
-              ? movieImages[selectedItem.episode_id] || NotFound
+            selectedItem.type === 'movie' || selectedItem.type === 'planet'
+              ? getCloudinaryImage(selectedItem.image)
               : selectedItem.image || NotFound
           "
           :alt="selectedItem.title || selectedItem.name"
@@ -146,8 +146,8 @@
 </template>
 
 <script setup>
-import { movieImages } from "../untils/movieImages"
 import NotFound from "../assets/images/not-found.jpg"
+import { getCloudinaryImage } from "../services/cloudinary"
 
 defineProps({
   isOpen: {

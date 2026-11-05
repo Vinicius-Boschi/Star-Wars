@@ -32,7 +32,10 @@
               'cards__favorite--active': isFavorite(character.id, 'character'),
             }"
             type="button"
-            @click="toggleFavorite(character, 'character')"
+            @click="toggleFavorite({
+              ...character,
+              image: character.image || NotFound,
+            }, 'character')"
           >
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path

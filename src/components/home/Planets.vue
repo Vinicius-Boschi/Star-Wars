@@ -15,7 +15,7 @@
       <article v-for="planet in cards" :key="planet.id" class="cards__item">
         <div class="cards__media">
           <img
-            :src="planet.image || NotFound"
+            :src="planet.image ? getCloudinaryImage(planet.image) : NotFound"
             :alt="planet.name"
             loading="lazy"
             class="cards__image"
@@ -41,7 +41,11 @@
         <div class="cards__content">
           <h2>{{ planet.name }}</h2>
 
-          <button type="button" class="cards__button" @click="openPlanet(planet)">
+          <button
+            type="button"
+            class="cards__button"
+            @click="openPlanet(planet)"
+          >
             See Details
           </button>
         </div>
@@ -53,8 +57,10 @@
 <script setup>
 import { computed, onMounted, ref } from "vue"
 import { getPlanets } from "../../services/starWarsApi"
+import { getCloudinaryImage } from "../../services/cloudinary"
 import { useFavorites } from "../../composables/useFavorites"
 
+import content from "../../data/content.json"
 import NotFound from "../../assets/images/not-found.jpg"
 
 const { loadFavorites, isFavorite, toggleFavorite } = useFavorites()
@@ -75,16 +81,24 @@ async function loadPlanets() {
   try {
     const data = await getPlanets()
 
-    planets.value = Array.isArray(data) ? data : data.results || []
+    const apiPlanets = Array.isArray(data) ? data : data?.results || []
+
+    planets.value = apiPlanets.map((planet) => ({
+      ...planet,
+      id: planet.url.split("/").filter(Boolean).pop(),
+      image:
+        content.planets.find((item) => item.name === planet.name)?.image ||
+        NotFound,
+    }))
   } catch (err) {
     console.error(err)
-    error.value = "Erro ao carregar os planetas."
+    error.value = "Error to load the planets."
   } finally {
     loading.value = false
   }
 }
 
-// Navegation to the planets 
+// Navegation to the planets
 function scrollToPlanets() {
   planetsSection.value?.scrollIntoView({
     behavior: "smooth",
