@@ -3,7 +3,7 @@
     <div class="header__container">
       <nav class="header__navbar">
         <div class="header__action">
-          <img src="" alt="Logo Star Wars" class="header__logo" />
+          <img src="../assets/images/star-wars-logo.jpg" alt="Logo Star Wars" class="header__logo" />
           <button class="header__button">
             <div class="header__burguer burguer-slip">
               <div class="header__burguer-lines"></div>
