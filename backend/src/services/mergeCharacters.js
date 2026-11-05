@@ -1,5 +1,14 @@
-import { getPeople, getPerson, getFilms, getPlanets } from "../providers/swapi.js"
-import { getCharacters as getDatabankCharacters } from "../providers/databank.js"
+import {
+  getPeople,
+  getPerson,
+  getFilms,
+  getPlanets,
+  getSpecies,
+} from "../providers/swapi.js"
+import {
+  getCharacters as getDatabankCharacters,
+  getSpecies as getDatabankSpecies,
+} from "../providers/databank.js"
 import { getAkababCharacters } from "../providers/akabab.js"
 
 function extractIdFromUrl(url) {
@@ -265,4 +274,59 @@ export async function getPlanet() {
   const data = await getPlanets()
 
   return Array.isArray(data) ? data : data.results || []
+}
+
+export async function getSpecie() {
+  const [swapiData, databankData] = await Promise.all([
+    getSpecies(),
+    getAllDatabankSpecies(),
+  ])
+
+  const swapiSpecies = Array.isArray(swapiData)
+    ? swapiData
+    : swapiData.results || []
+
+  const databankSpecies = Array.isArray(databankData)
+    ? databankData
+    : databankData.data || databankData.results || []
+
+  return swapiSpecies.map((specie) => {
+    const match = databankSpecies.find(
+      (item) => normalizeName(item.name) === normalizeName(specie.name),
+    )
+
+    return {
+      ...specie,
+      id: extractIdFromUrl(specie.url),
+      image: match?.image || null,
+      description: match?.description || "",
+    }
+  })
+}
+
+async function getAllDatabankSpecies() {
+  const species = []
+
+  let page = 1
+  const limit = 100
+
+  while (true) {
+    const response = await getDatabankSpecies(page, limit)
+
+    const data = Array.isArray(response)
+      ? response
+      : response.data || response.results || []
+
+    species.push(...data)
+
+    const total = response.info?.total
+
+    if (!total || species.length >= total || !data.length) {
+      break
+    }
+
+    page++
+  }
+
+  return species
 }

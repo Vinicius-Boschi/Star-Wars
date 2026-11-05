@@ -6,6 +6,7 @@ import charactersRouter from "./src/routes/characters.js"
 import characterRouter from "./src/routes/character.js"
 import moviesRouter from "./src/routes/movies.js"
 import planetsRouter from "./src/routes/planets.js"
+import speciesRouter from "./src/routes/species.js"
 
 const app = express()
 
@@ -25,5 +26,6 @@ app.use("/characters", charactersRouter)
 app.use("/character", characterRouter)
 app.use("/movies", moviesRouter)
 app.use("/planets", planetsRouter)
+app.use("/species", speciesRouter)
 
 export default app

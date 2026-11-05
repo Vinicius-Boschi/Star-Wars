@@ -1,9 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router"
-
 import Home from "../views/Home.vue"
-import Movies from "../components/home/Movies.vue"
-import Planets from "../components/home/Planets.vue"
 import Favorites from "../views/Favorites.vue"
+import ListPages from "../views/ListPage.vue"
 
 const router = createRouter({
   history: createWebHistory(),
@@ -21,12 +19,26 @@ const router = createRouter({
     {
       path: "/movies",
       name: "Movies",
-      component: Movies,
+      component: ListPages,
+      props: { type: "movies" },
     },
-        {
+    {
       path: "/planets",
       name: "Planets",
-      component: Planets,
+      component: ListPages,
+      props: { type: "planets" },
+    },
+    {
+      path: "/species",
+      name: "Species",
+      component: ListPages,
+      props: { type: "species" },
+    },
+    {
+      path: "/characters",
+      name: "Characters",
+      component: ListPages,
+      props: { type: "characters" },
     },
   ],
 })

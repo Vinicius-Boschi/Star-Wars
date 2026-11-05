@@ -35,16 +35,6 @@
     gap: 1.5rem;
   }
 
-  &__status {
-    padding: 40px 20px;
-    text-align: center;
-    color: $white;
-
-    &--error {
-      color: $red;
-    }
-  }
-
   &__item {
     position: relative;
     width: 100%;

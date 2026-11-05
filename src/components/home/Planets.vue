@@ -2,7 +2,6 @@
   <section ref="planetsSection" class="cards__featured">
     <div class="cards__heading">
       <h2>Highlight Planets</h2>
-      <a href="#">See all</a>
     </div>
 
     <p v-if="loading" class="cards__status">Loading Planets...</p>

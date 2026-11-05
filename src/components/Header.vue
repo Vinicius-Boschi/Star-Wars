@@ -32,12 +32,12 @@
 <script setup>
 const items = [
   { name: "Home", title: "Home", route: "/" },
-  { name: "Characters", title: "Characters", route: "/" },
+  { name: "Characters", title: "Characters", route: "/characters" },
   { name: "Movies", title: "Movies", route: "/movies" },
-  { name: "Planets", title: "Planets", route: "/" },
+  { name: "Planets", title: "Planets", route: "/planets" },
   { name: "Ships", title: "Ships", route: "/" },
   { name: "Vehicle", title: "Vehicles", route: "/" },
-  { name: "Specie", title: "Species", route: "/" },
+  { name: "Specie", title: "Species", route: "/species" },
   { name: "Favorites", title: "Favorites", route: "/favorites" },
 ]
 </script>

@@ -25,3 +25,7 @@ export async function getFilms() {
 export async function getPlanets() {
   return request("/planets")
 }
+
+export async function getSpecies() {
+  return request("/species")
+}

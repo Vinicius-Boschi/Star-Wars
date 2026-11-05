@@ -19,3 +19,7 @@ export function getCharacterByName(name) {
 
   return request(`/characters/name/${encodedName}`)
 }
+
+export function getSpecies(page = 1, limit = 10) {
+  return request(`/species?page=${page}&limit=${limit}`)
+}

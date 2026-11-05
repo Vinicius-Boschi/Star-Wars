@@ -2,7 +2,6 @@
   <section ref="charactersSection" class="cards__featured">
     <div class="cards__heading">
       <h2>Highlight Characters</h2>
-      <a href="#">See all</a>
     </div>
 
     <p v-if="loading" class="cards__status">Loading Characters...</p>
