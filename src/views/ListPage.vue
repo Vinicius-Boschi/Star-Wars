@@ -1,5 +1,5 @@
 <template>
-  <main>
+  <main v-if="config">
     <component
       :is="config.component"
       :[config.prop]="items"
@@ -14,7 +14,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue"
+import { ref, onMounted, computed } from "vue"
 import {
   getSpecies,
   getPlanets,
@@ -40,34 +40,39 @@ const configs = {
     component: Species,
     prop: "species",
     event: "open-species",
+    modalType: "species",
     fetchData: getSpecies,
   },
   planets: {
     component: Planets,
     prop: "planets",
     event: "open-planet",
+    modalType: "planet",
     fetchData: getPlanets,
   },
   movies: {
     component: Movies,
     prop: "movies",
     event: "open-movie",
+    modalType: "movie",
     fetchData: getMovies,
   },
   characters: {
     component: CharactersSection,
     prop: "characters",
     event: "open-character",
+    modalType: "character",
     fetchData: getCharacters,
   },
 }
 
 const config = computed(() => configs[props.type])
+
 const items = ref([])
 const selectedItem = ref(null)
 
 function open(item) {
-  selectedItem.value = { ...item, type: props.type }
+  selectedItem.value = { ...item, type: config.value.modalType }
 }
 
 onMounted(async () => {

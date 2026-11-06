@@ -8,6 +8,7 @@ import {
 import {
   getCharacters as getDatabankCharacters,
   getSpecies as getDatabankSpecies,
+  getPlanets as getDatabankPlanets,
 } from "../providers/databank.js"
 import { getAkababCharacters } from "../providers/akabab.js"
 
@@ -191,7 +192,6 @@ export async function getCharacters() {
 
   const usedDatabankIds = new Set()
 
-  // Personagens da SWAPI combinados com o Databank
   const mergedCharacters = swapiCharacters.map((character) => {
     const swapiCharacter = normalizeSwapiCharacter(character)
 
@@ -216,7 +216,6 @@ export async function getCharacters() {
     }
   })
 
-  // Adiciona os personagens exclusivos do Databank
   const databankOnlyCharacters = databankCharacters
     .filter((character) => !usedDatabankIds.has(character._id))
     .map((character) => ({
@@ -266,12 +265,6 @@ export async function getCharacter(id) {
 
 export async function getMovies() {
   const data = await getFilms()
-
-  return Array.isArray(data) ? data : data.results || []
-}
-
-export async function getPlanet() {
-  const data = await getPlanets()
 
   return Array.isArray(data) ? data : data.results || []
 }
@@ -329,4 +322,59 @@ async function getAllDatabankSpecies() {
   }
 
   return species
+}
+
+export async function getPlanet() {
+  const [swapiData, databankData] = await Promise.all([
+    getPlanets(),
+    getAllDatabankPlanets(),
+  ])
+
+  const swapiPlanets = Array.isArray(swapiData)
+    ? swapiData
+    : swapiData.results || []
+
+  const databankPlanets = Array.isArray(databankData)
+    ? databankData
+    : databankData.data || databankData.results || []
+
+  return swapiPlanets.map((planet) => {
+    const match = databankPlanets.find(
+      (item) => normalizeName(item.name) === normalizeName(planet.name),
+    )
+
+    return {
+      ...planet,
+      id: extractIdFromUrl(planet.url),
+      image: match?.image || null,
+      description: match?.description || "",
+    }
+  })
+}
+
+async function getAllDatabankPlanets() {
+  const planets = []
+
+  let page = 1
+  const limit = 100
+
+  while (true) {
+    const response = await getDatabankPlanets(page, limit)
+
+    const data = Array.isArray(response)
+      ? response
+      : response.data || response.results || []
+
+    planets.push(...data)
+
+    const total = response.info?.total
+
+    if (!total || planets.length >= total || !data.length) {
+      break
+    }
+
+    page++
+  }
+
+  return planets
 }

@@ -4,15 +4,9 @@
       <h2>Highlight Characters</h2>
     </div>
 
-    <p v-if="loading" class="cards__status">Loading Characters...</p>
-
-    <p v-else-if="error" class="cards__status cards__status--error">
-      {{ error }}
-    </p>
-
-    <div v-else id="characters" class="cards__grid">
+    <div id="characters" class="cards__grid">
       <article
-        v-for="character in cards"
+        v-for="character in props.characters"
         :key="character.id"
         class="cards__item"
       >
@@ -31,10 +25,15 @@
               'cards__favorite--active': isFavorite(character.id, 'character'),
             }"
             type="button"
-            @click="toggleFavorite({
-              ...character,
-              image: character.image || NotFound,
-            }, 'character')"
+            @click="
+              toggleFavorite(
+                {
+                  ...character,
+                  image: character.image || NotFound,
+                },
+                'character',
+              )
+            "
           >
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path
@@ -61,8 +60,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from "vue"
-import { getCharacters } from "../../services/starWarsApi"
+import { onMounted } from "vue"
 import { useFavorites } from "../../composables/useFavorites"
 
 import NotFound from "../../assets/images/not-found.jpg"
@@ -71,36 +69,12 @@ const { loadFavorites, isFavorite, toggleFavorite } = useFavorites()
 
 const emit = defineEmits(["open-character"])
 
-const loading = ref(true)
-const error = ref(null)
-const characters = ref([])
-const charactersSection = ref(null)
-
-const cards = computed(() => characters.value.slice(0, 6))
-
-async function loadCharacters() {
-  loading.value = true
-  error.value = null
-
-  try {
-    const data = await getCharacters()
-
-    characters.value = Array.isArray(data) ? data : data.results || []
-  } catch (err) {
-    console.error(err)
-    error.value = "Erro ao carregar personagens."
-  } finally {
-    loading.value = false
-  }
-}
-
-// Navegação até os personagens
-function scrollToCharacters() {
-  charactersSection.value?.scrollIntoView({
-    behavior: "smooth",
-    block: "start",
-  })
-}
+const props = defineProps({
+  characters: {
+    type: Array,
+    default: () => [],
+  },
+})
 
 // Modal
 function openCharacter(character) {
@@ -109,6 +83,5 @@ function openCharacter(character) {
 
 onMounted(() => {
   loadFavorites()
-  loadCharacters()
 })
 </script>

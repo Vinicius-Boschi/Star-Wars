@@ -4,14 +4,12 @@
       <h2>Highlight Planets</h2>
     </div>
 
-    <p v-if="loading" class="cards__status">Loading Planets...</p>
-
-    <p v-else-if="error" class="cards__status cards__status--error">
-      {{ error }}
-    </p>
-
-    <div v-else id="planets" class="cards__grid">
-      <article v-for="planet in cards" :key="planet.id" class="cards__item">
+    <div id="planets" class="cards__grid">
+      <article
+        v-for="planet in props.planets"
+        :key="planet.id"
+        class="cards__item"
+      >
         <div class="cards__media">
           <img
             :src="planet.image ? getCloudinaryImage(planet.image) : NotFound"
@@ -54,64 +52,28 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from "vue"
-import { getPlanets } from "../../services/starWarsApi"
+import { onMounted } from "vue"
 import { getCloudinaryImage } from "../../services/cloudinary"
 import { useFavorites } from "../../composables/useFavorites"
 
-import content from "../../data/content.json"
 import NotFound from "../../assets/images/not-found.jpg"
 
 const { loadFavorites, isFavorite, toggleFavorite } = useFavorites()
 
 const emit = defineEmits(["open-planet"])
 
-const loading = ref(true)
-const error = ref(null)
-const planets = ref([])
-const planetsSection = ref(null)
+const props = defineProps({
+  planets: {
+    type: Array,
+    default: () => [],
+  },
+})
 
-const cards = computed(() => planets.value.slice(0, 6))
-
-async function loadPlanets() {
-  loading.value = true
-  error.value = null
-
-  try {
-    const data = await getPlanets()
-
-    const apiPlanets = Array.isArray(data) ? data : data?.results || []
-
-    planets.value = apiPlanets.map((planet) => ({
-      ...planet,
-      id: planet.url.split("/").filter(Boolean).pop(),
-      image:
-        content.planets.find((item) => item.name === planet.name)?.image ||
-        NotFound,
-    }))
-  } catch (err) {
-    console.error(err)
-    error.value = "Error to load the planets."
-  } finally {
-    loading.value = false
-  }
-}
-
-// Navegation to the planets
-function scrollToPlanets() {
-  planetsSection.value?.scrollIntoView({
-    behavior: "smooth",
-    block: "start",
-  })
-}
-
-// Modal
 function openPlanet(planet) {
   emit("open-planet", planet)
 }
 
 onMounted(() => {
   loadFavorites()
-  loadPlanets()
 })
 </script>

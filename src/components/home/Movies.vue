@@ -4,14 +4,12 @@
       <h2>Highlight Movies</h2>
     </div>
 
-    <p v-if="loading" class="cards__status">Loading Movies...</p>
-
-    <p v-else-if="error" class="cards__status cards__status--error">
-      {{ error }}
-    </p>
-
-    <div v-else id="movies" class="cards__grid">
-      <article v-for="movie in cards" :key="movie.id" class="cards__item">
+    <div id="movies" class="cards__grid">
+      <article
+        v-for="movie in props.movies"
+        :key="movie.id"
+        class="cards__item"
+      >
         <div class="cards__media">
           <img
             :src="movie.image ? getCloudinaryImage(movie.image) : NotFound"
@@ -50,63 +48,28 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from "vue"
-import { getMovies } from "../../services/starWarsApi"
+import { onMounted } from "vue"
 import { useFavorites } from "../../composables/useFavorites"
 import { getCloudinaryImage } from "../../services/cloudinary"
-import content from "../../data/content.json"
+
 import NotFound from "../../assets/images/not-found.jpg"
 
 const { loadFavorites, isFavorite, toggleFavorite } = useFavorites()
 
 const emit = defineEmits(["open-movie"])
 
-const loading = ref(true)
-const error = ref(null)
-const movies = ref([])
-const moviesSection = ref(null)
+const props = defineProps({
+  movies: {
+    type: Array,
+    default: () => [],
+  },
+})
 
-const cards = computed(() => movies.value.slice(0, 6))
-
-async function loadMovies() {
-  loading.value = true
-  error.value = null
-
-  try {
-    const data = await getMovies()
-
-    const apiMovies = Array.isArray(data) ? data : data?.results || []
-
-    movies.value = apiMovies.map((movie) => ({
-      ...movie,
-      id: movie.episode_id,
-      image:
-        content.movies.find((item) => item.title === movie.title)?.image ||
-        NotFound,
-    }))
-  } catch (err) {
-    console.error(err)
-    error.value = "Error to loading movies."
-  } finally {
-    loading.value = false
-  }
-}
-
-// Navegation to the characters
-function scrollToMovies() {
-  moviesSection.value?.scrollIntoView({
-    behavior: "smooth",
-    block: "start",
-  })
-}
-
-// Modal
 function openMovie(movie) {
   emit("open-movie", movie)
 }
 
 onMounted(() => {
   loadFavorites()
-  loadMovies()
 })
 </script>
