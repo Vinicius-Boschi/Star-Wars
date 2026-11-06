@@ -29,3 +29,7 @@ export async function getPlanets() {
 export async function getSpecies() {
   return request("/species")
 }
+
+export async function getVehicles() {
+  return request("/vehicles")
+}

@@ -4,11 +4,13 @@ import {
   getFilms,
   getPlanets,
   getSpecies,
+  getVehicles,
 } from "../providers/swapi.js"
 import {
   getCharacters as getDatabankCharacters,
   getSpecies as getDatabankSpecies,
   getPlanets as getDatabankPlanets,
+  getVehicles as getDatabankVehicles,
 } from "../providers/databank.js"
 import { getAkababCharacters } from "../providers/akabab.js"
 
@@ -377,4 +379,78 @@ async function getAllDatabankPlanets() {
   }
 
   return planets
+}
+
+export async function getVehicle() {
+  const [swapiData, databankData] = await Promise.all([
+    getVehicles(),
+    getAllDatabankVehicles(),
+  ])
+
+  const swapiVehicles = Array.isArray(swapiData)
+    ? swapiData
+    : swapiData.results || []
+
+  const databankVehicles = Array.isArray(databankData)
+    ? databankData
+    : databankData.data || databankData.results || []
+
+  const usedDatabankIds = new Set()
+
+  const mergedVehicles = swapiVehicles.map((vehicle) => {
+    const match = databankVehicles.find(
+      (item) => normalizeName(item.name) === normalizeName(vehicle.name),
+    )
+
+    if (match) usedDatabankIds.add(match._id)
+
+    return {
+      ...vehicle,
+      id: extractIdFromUrl(vehicle.url),
+      image: match?.image || null,
+      description: match?.description || "",
+    }
+  })
+
+  const databankOnlyVehicles = databankVehicles
+    .filter((item) => !usedDatabankIds.has(item._id))
+    .map((item) => ({
+      id: item._id,
+      name: item.name,
+      image: item.image || null,
+      description: item.description || "",
+      model: null,
+      manufacturer: null,
+      vehicle_class: null,
+      max_atmosphering_speed: null,
+    }))
+
+  return [...mergedVehicles, ...databankOnlyVehicles]
+}
+
+async function getAllDatabankVehicles() {
+  const vehicles = []
+
+  let page = 1
+  const limit = 100
+
+  while (true) {
+    const response = await getDatabankVehicles(page, limit)
+
+    const data = Array.isArray(response)
+      ? response
+      : response.data || response.results || []
+
+    vehicles.push(...data)
+
+    const total = response.info?.total
+
+    if (!total || vehicles.length >= total || !data.length) {
+      break
+    }
+
+    page++
+  }
+
+  return vehicles
 }

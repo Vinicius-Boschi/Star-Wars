@@ -9,6 +9,7 @@
     <Movies @open-movie="openMovie" :movies="featuredMovies" />
     <Planets @open-planet="openPlanet" :planets="featuredPlanets" />
     <Species @open-species="openSpecies" :species="featuredSpecies" />
+    <Vehicles @open-vehicle="openVehicle" :vehicles="featuredVehicles" />
     <Modal
       :is-open="!!selectedItem"
       :selected-item="selectedItem"
@@ -24,6 +25,7 @@ import {
   getPlanets,
   getMovies,
   getCharacters,
+  getVehicles,
 } from "../services/starWarsApi"
 
 import Banner from "../components/home/HomeBanner.vue"
@@ -32,12 +34,14 @@ import Movies from "../components/home/Movies.vue"
 import Modal from "../components/Modal.vue"
 import Planets from "../components/home/Planets.vue"
 import Species from "../components/home/Species.vue"
+import Vehicles from "../components/home/Vehicles.vue"
 
 const selectedItem = ref(null)
 const species = ref([])
 const planets = ref([])
 const movies = ref([])
 const characters = ref([])
+const vehicles = ref([])
 const error = ref(null)
 const loading = ref(false)
 
@@ -45,6 +49,7 @@ const featuredSpecies = computed(() => species.value.slice(0, 6))
 const featuredPlanets = computed(() => planets.value.slice(0, 6))
 const featuredMovies = computed(() => movies.value.slice(0, 6))
 const featuredCharacters = computed(() => characters.value.slice(0, 6))
+const featuredVehicles = computed(() => vehicles.value.slice(0, 6))
 
 async function loadSpecies() {
   try {
@@ -87,6 +92,15 @@ async function loadCharacters() {
   }
 }
 
+async function loadVehicles() {
+  try {
+    const data = await getVehicles()
+    vehicles.value = Array.isArray(data) ? data : data.results || []
+  } catch (err) {
+    console.error(err)
+  }
+}
+
 // Modal
 function openItem(item, type) {
   selectedItem.value = {
@@ -111,6 +125,10 @@ function openSpecies(species) {
   openItem(species, "species")
 }
 
+function openVehicle(vehicle) {
+  openItem(vehicle, "vehicle")
+}
+
 function closeModal() {
   selectedItem.value = null
 }
@@ -120,5 +138,6 @@ onMounted(() => {
   loadPlanets()
   loadMovies()
   loadCharacters()
+  loadVehicles()
 })
 </script>

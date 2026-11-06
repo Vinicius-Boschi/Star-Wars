@@ -36,7 +36,7 @@ const items = [
   { name: "Movies", title: "Movies", route: "/movies" },
   { name: "Planets", title: "Planets", route: "/planets" },
   { name: "Ships", title: "Ships", route: "/" },
-  { name: "Vehicle", title: "Vehicles", route: "/" },
+  { name: "Vehicle", title: "Vehicles", route: "/vehicles" },
   { name: "Specie", title: "Species", route: "/species" },
   { name: "Favorites", title: "Favorites", route: "/favorites" },
 ]

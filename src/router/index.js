@@ -40,6 +40,12 @@ const router = createRouter({
       component: ListPages,
       props: { type: "characters" },
     },
+    {
+      path: "/vehicles",
+      name: "Vehicles",
+      component: ListPages,
+      props: { type: "vehicles" },
+    },
   ],
 })
 
