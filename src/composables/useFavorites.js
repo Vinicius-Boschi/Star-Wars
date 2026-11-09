@@ -4,16 +4,17 @@ const favorites = ref([])
 
 function isFavorite(id, type) {
   return favorites.value.some(
-    (favorite) => favorite.id === Number(id) && favorite.type === type,
+    (favorite) => String(favorite.id) === String(id) && favorite.type === type,
   )
 }
 
 function toggleFavorite(item, type) {
-  const id = Number(item.id)
+  const id = item.id
 
   if (isFavorite(id, type)) {
     favorites.value = favorites.value.filter(
-      (favorite) => !(favorite.id === id && favorite.type === type),
+      (favorite) =>
+        !(String(favorite.id) === String(id) && favorite.type === type),
     )
   } else {
     favorites.value.push({
@@ -33,7 +34,7 @@ function saveFavorites() {
       JSON.stringify(favorites.value),
     )
   } catch (err) {
-    console.error("Erro ao salvar favoritos:", err)
+    console.error("Error to save favorites:", err)
   }
 }
 
@@ -49,20 +50,17 @@ function loadFavorites() {
     const parsedFavorites = JSON.parse(savedFavorites)
 
     favorites.value = Array.isArray(parsedFavorites)
-      ? parsedFavorites
-          .filter(
-            (item) =>
-              item &&
-              Number.isFinite(Number(item.id)) &&
-              typeof item.type === "string",
-          )
-          .map((item) => ({
-            ...item,
-            id: Number(item.id),
-          }))
+      ? parsedFavorites.filter(
+          (item) =>
+            item &&
+            item.id !== null &&
+            item.id !== undefined &&
+            item.id !== "" &&
+            typeof item.type === "string",
+        )
       : []
   } catch (err) {
-    console.error("Erro ao carregar favoritos:", err)
+    console.error("Error to load favorites:", err)
     favorites.value = []
   }
 }

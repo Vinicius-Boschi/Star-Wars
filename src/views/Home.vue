@@ -10,6 +10,8 @@
     <Planets @open-planet="openPlanet" :planets="featuredPlanets" />
     <Species @open-species="openSpecies" :species="featuredSpecies" />
     <Vehicles @open-vehicle="openVehicle" :vehicles="featuredVehicles" />
+    <Starships @open-starship="openStarship" :starships="featuredStarships" />
+    <Creatures @open-creature="openCreature" :creatures="featuredCreatures" />
     <Modal
       :is-open="!!selectedItem"
       :selected-item="selectedItem"
@@ -26,6 +28,8 @@ import {
   getMovies,
   getCharacters,
   getVehicles,
+  getStarships,
+  getCreatures,
 } from "../services/starWarsApi"
 
 import Banner from "../components/home/HomeBanner.vue"
@@ -35,6 +39,8 @@ import Modal from "../components/Modal.vue"
 import Planets from "../components/home/Planets.vue"
 import Species from "../components/home/Species.vue"
 import Vehicles from "../components/home/Vehicles.vue"
+import Starships from "../components/home/Starships.vue"
+import Creatures from "../components/home/Creatures.vue"
 
 const selectedItem = ref(null)
 const species = ref([])
@@ -42,6 +48,8 @@ const planets = ref([])
 const movies = ref([])
 const characters = ref([])
 const vehicles = ref([])
+const starships = ref([])
+const creatures = ref([])
 const error = ref(null)
 const loading = ref(false)
 
@@ -50,6 +58,8 @@ const featuredPlanets = computed(() => planets.value.slice(0, 6))
 const featuredMovies = computed(() => movies.value.slice(0, 6))
 const featuredCharacters = computed(() => characters.value.slice(0, 6))
 const featuredVehicles = computed(() => vehicles.value.slice(0, 6))
+const featuredStarships = computed(() => starships.value.slice(0, 6))
+const featuredCreatures = computed(() => creatures.value.slice(0, 6))
 
 async function loadSpecies() {
   try {
@@ -101,6 +111,24 @@ async function loadVehicles() {
   }
 }
 
+async function loadStarships() {
+  try {
+    const data = await getStarships()
+    starships.value = Array.isArray(data) ? data : data.results || []
+  } catch (err) {
+    console.error(err)
+  }
+}
+
+async function loadCreatures() {
+  try {
+    const data = await getCreatures()
+    creatures.value = Array.isArray(data) ? data : data.results || []
+  } catch (err) {
+    console.error(err)
+  }
+}
+
 // Modal
 function openItem(item, type) {
   selectedItem.value = {
@@ -129,6 +157,14 @@ function openVehicle(vehicle) {
   openItem(vehicle, "vehicle")
 }
 
+function openStarship(starship) {
+  openItem(starship, "starship")
+}
+
+function openCreature(creature) {
+  openItem(creature, "creature")
+}
+
 function closeModal() {
   selectedItem.value = null
 }
@@ -139,5 +175,7 @@ onMounted(() => {
   loadMovies()
   loadCharacters()
   loadVehicles()
+  loadStarships()
+  loadCreatures()
 })
 </script>

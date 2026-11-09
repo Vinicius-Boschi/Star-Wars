@@ -8,6 +8,8 @@ import moviesRouter from "./src/routes/movies.js"
 import planetsRouter from "./src/routes/planets.js"
 import speciesRouter from "./src/routes/species.js"
 import vehiclesRouter from "./src/routes/vehicles.js"
+import starshipsRouter from "./src/routes/starships.js"
+import creaturesRouter from "./src/routes/creatures.js"
 
 const app = express()
 
@@ -29,5 +31,7 @@ app.use("/movies", moviesRouter)
 app.use("/planets", planetsRouter)
 app.use("/species", speciesRouter)
 app.use("/vehicles", vehiclesRouter)
+app.use("/starships", starshipsRouter)
+app.use("/creatures", creaturesRouter)
 
 export default app

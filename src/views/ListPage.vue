@@ -21,6 +21,8 @@ import {
   getMovies,
   getCharacters,
   getVehicles,
+  getStarships,
+  getCreatures,
 } from "../services/starWarsApi"
 
 import Species from "../components/home/Species.vue"
@@ -28,6 +30,8 @@ import Planets from "../components/home/Planets.vue"
 import Movies from "../components/home/Movies.vue"
 import CharactersSection from "../components/home/CharactersSection.vue"
 import Vehicles from "../components/home/Vehicles.vue"
+import Starships from "../components/home/Starships.vue"
+import Creatures from "../components/home/Creatures.vue"
 import Modal from "../components/Modal.vue"
 
 const props = defineProps({
@@ -72,6 +76,20 @@ const configs = {
     event: "open-vehicle",
     modalType: "vehicle",
     fetchData: getVehicles,
+  },
+  starships: {
+    component: Starships,
+    prop: "starships",
+    event: "open-starship",
+    modalType: "starship",
+    fetchData: getStarships,
+  },
+  creatures: {
+    component: Creatures,
+    prop: "creatures",
+    event: "open-creature",
+    modalType: "creature",
+    fetchData: getCreatures,
   },
 }
 

@@ -46,6 +46,18 @@ const router = createRouter({
       component: ListPages,
       props: { type: "vehicles" },
     },
+    {
+      path: "/starships",
+      name: "Starships",
+      component: ListPages,
+      props: { type: "starships" },
+    },
+    {
+      path: "/creatures",
+      name: "Creatures",
+      component: ListPages,
+      props: { type: "creatures" },
+    },
   ],
 })
 

@@ -37,3 +37,7 @@ export function getStarships() {
 export function getVehicles() {
   return request("/vehicles");
 }
+
+export function getCreatures() {
+  return request("/creatures");
+}

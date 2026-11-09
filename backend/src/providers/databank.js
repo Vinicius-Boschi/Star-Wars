@@ -31,3 +31,7 @@ export function getPlanets(page = 1, limit = 10) {
 export function getVehicles(page = 1, limit = 10) {
   return request(`/vehicles?page=${page}&limit=${limit}`)
 }
+
+export function getCreatures(page = 1, limit = 10) {
+  return request(`/creatures?page=${page}&limit=${limit}`)
+}

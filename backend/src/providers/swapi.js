@@ -33,3 +33,11 @@ export async function getSpecies() {
 export async function getVehicles() {
   return request("/vehicles")
 }
+
+export async function getStarships() {
+  return request("/starships")
+}
+
+export async function getCreatures() {
+  return request("/creatures")
+}

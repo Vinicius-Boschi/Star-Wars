@@ -5,12 +5,15 @@ import {
   getPlanets,
   getSpecies,
   getVehicles,
+  getStarships,
 } from "../providers/swapi.js"
+
 import {
   getCharacters as getDatabankCharacters,
   getSpecies as getDatabankSpecies,
   getPlanets as getDatabankPlanets,
   getVehicles as getDatabankVehicles,
+  getCreatures as getDatabankCreatures,
 } from "../providers/databank.js"
 import { getAkababCharacters } from "../providers/akabab.js"
 
@@ -419,10 +422,6 @@ export async function getVehicle() {
       name: item.name,
       image: item.image || null,
       description: item.description || "",
-      model: null,
-      manufacturer: null,
-      vehicle_class: null,
-      max_atmosphering_speed: null,
     }))
 
   return [...mergedVehicles, ...databankOnlyVehicles]
@@ -453,4 +452,59 @@ async function getAllDatabankVehicles() {
   }
 
   return vehicles
+}
+
+export async function getStarship() {
+  const data = await getStarships()
+
+  const swapiStarships = Array.isArray(data) ? data : data.results || []
+
+  return swapiStarships.map((starship) => ({
+    ...starship,
+    id: extractIdFromUrl(starship.url),
+    image: null,
+    description: "",
+  }))
+}
+
+export async function getCreature() {
+  const databankData = await getAllDatabankCreatures()
+
+  const databankCreatures = Array.isArray(databankData)
+    ? databankData
+    : databankData.data || databankData.results || []
+
+  return databankCreatures.map((item) => ({
+    id: item._id,
+    name: item.name,
+    image: item.image || null,
+    description: item.description || "",
+  }))
+}
+
+async function getAllDatabankCreatures() {
+  const creatures = []
+
+  let page = 1
+  const limit = 100
+
+  while (true) {
+    const response = await getDatabankCreatures(page, limit)
+
+    const data = Array.isArray(response)
+      ? response
+      : response.data || response.results || []
+
+    creatures.push(...data)
+
+    const total = response.info?.total
+
+    if (!total || creatures.length >= total || !data.length) {
+      break
+    }
+
+    page++
+  }
+
+  return creatures
 }
