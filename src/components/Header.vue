@@ -17,7 +17,7 @@
         <div class="header__links-container">
           <ul class="header__list">
             <li class="header__links" v-for="item in items" :key="item.name">
-              <RouterLink :to="item.route">{{ item.title }}</RouterLink>
+              <RouterLink class="animation" :to="item.route">{{ item.title }}</RouterLink>
             </li>
           </ul>
         </div>
