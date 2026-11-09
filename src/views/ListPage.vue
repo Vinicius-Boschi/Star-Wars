@@ -23,6 +23,9 @@ import {
   getVehicles,
   getStarships,
   getCreatures,
+  getDroids,
+  getLocations,
+  getOrganizations,
 } from "../services/starWarsApi"
 
 import Species from "../components/home/Species.vue"
@@ -32,6 +35,9 @@ import CharactersSection from "../components/home/CharactersSection.vue"
 import Vehicles from "../components/home/Vehicles.vue"
 import Starships from "../components/home/Starships.vue"
 import Creatures from "../components/home/Creatures.vue"
+import Droids from "../components/home/Droids.vue"
+import Locations from "../components/home/Locations.vue"
+import Organizations from "../components/home/Organizations.vue"
 import Modal from "../components/Modal.vue"
 
 const props = defineProps({
@@ -90,6 +96,27 @@ const configs = {
     event: "open-creature",
     modalType: "creature",
     fetchData: getCreatures,
+  },
+  droids: {
+    component: Droids,
+    prop: "droids",
+    event: "open-droid",
+    modalType: "droid",
+    fetchData: getDroids,
+  },
+  locations: {
+    component: Locations,
+    prop: "locations",
+    event: "open-location",
+    modalType: "location",
+    fetchData: getLocations,
+  },
+  organizations: {
+    component: Organizations,
+    prop: "organizations",
+    event: "open-organization",
+    modalType: "organization",
+    fetchData: getOrganizations,
   },
 }
 

@@ -14,6 +14,9 @@ import {
   getPlanets as getDatabankPlanets,
   getVehicles as getDatabankVehicles,
   getCreatures as getDatabankCreatures,
+  getDroids as getDatabankDroids,
+  getLocations as getDatabankLocations,
+  getOrganizations as getDatabankOrganizations,
 } from "../providers/databank.js"
 import { getAkababCharacters } from "../providers/akabab.js"
 
@@ -507,4 +510,130 @@ async function getAllDatabankCreatures() {
   }
 
   return creatures
+}
+
+export async function getDroid() {
+  const databankData = await getAllDatabankDroids()
+
+  const databankDroids = Array.isArray(databankData)
+    ? databankData
+    : databankData.data || databankData.results || []
+
+  return databankDroids.map((item) => ({
+    id: item._id,
+    name: item.name,
+    image: item.image || null,
+    description: item.description || "",
+  }))
+}
+
+async function getAllDatabankDroids() {
+  const droids = []
+
+  let page = 1
+  const limit = 100
+
+  while (true) {
+    const response = await getDatabankDroids(page, limit)
+
+    const data = Array.isArray(response)
+      ? response
+      : response.data || response.results || []
+
+    droids.push(...data)
+
+    const total = response.info?.total
+
+    if (!total || droids.length >= total || !data.length) {
+      break
+    }
+
+    page++
+  }
+
+  return droids
+}
+
+export async function getLocation() {
+  const databankData = await getAllDatabankLocations()
+
+  const databankLocations = Array.isArray(databankData)
+    ? databankData
+    : databankData.data || databankData.results || []
+
+  return databankLocations.map((item) => ({
+    id: item._id,
+    name: item.name,
+    image: item.image || null,
+    description: item.description || "",
+  }))
+}
+
+async function getAllDatabankLocations() {
+  const locations = []
+
+  let page = 1
+  const limit = 100
+
+  while (true) {
+    const response = await getDatabankLocations(page, limit)
+
+    const data = Array.isArray(response)
+      ? response
+      : response.data || response.results || []
+
+    locations.push(...data)
+
+    const total = response.info?.total
+
+    if (!total || locations.length >= total || !data.length) {
+      break
+    }
+
+    page++
+  }
+
+  return locations
+}
+
+export async function getOrganization() {
+  const databankData = await getAllDatabankOrganizations()
+
+  const databankOrganizations = Array.isArray(databankData)
+    ? databankData
+    : databankData.data || databankData.results || []
+
+  return databankOrganizations.map((item) => ({
+    id: item._id,
+    name: item.name,
+    image: item.image || null,
+    description: item.description || "",
+  }))
+}
+
+async function getAllDatabankOrganizations() {
+  const organizations = []
+
+  let page = 1
+  const limit = 100
+
+  while (true) {
+    const response = await getDatabankOrganizations(page, limit)
+
+    const data = Array.isArray(response)
+      ? response
+      : response.data || response.results || []
+
+    organizations.push(...data)
+
+    const total = response.info?.total
+
+    if (!total || organizations.length >= total || !data.length) {
+      break
+    }
+
+    page++
+  }
+
+  return organizations
 }

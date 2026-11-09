@@ -35,3 +35,15 @@ export function getVehicles(page = 1, limit = 10) {
 export function getCreatures(page = 1, limit = 10) {
   return request(`/creatures?page=${page}&limit=${limit}`)
 }
+
+export function getDroids(page = 1, limit = 10) {
+  return request(`/droids?page=${page}&limit=${limit}`)
+}
+
+export function getLocations(page = 1, limit = 10) {
+  return request(`/locations?page=${page}&limit=${limit}`)
+}
+
+export function getOrganizations(page = 1, limit = 10) {
+  return request(`/organizations?page=${page}&limit=${limit}`)
+}

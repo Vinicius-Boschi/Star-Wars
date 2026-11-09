@@ -10,6 +10,9 @@ import speciesRouter from "./src/routes/species.js"
 import vehiclesRouter from "./src/routes/vehicles.js"
 import starshipsRouter from "./src/routes/starships.js"
 import creaturesRouter from "./src/routes/creatures.js"
+import droidsRouter from "./src/routes/droids.js"
+import locationsRouter from "./src/routes/locations.js"
+import organizationsRouter from "./src/routes/organizations.js"
 
 const app = express()
 
@@ -33,5 +36,8 @@ app.use("/species", speciesRouter)
 app.use("/vehicles", vehiclesRouter)
 app.use("/starships", starshipsRouter)
 app.use("/creatures", creaturesRouter)
+app.use("/droids", droidsRouter)
+app.use("/locations", locationsRouter)
+app.use("/organizations", organizationsRouter)
 
 export default app

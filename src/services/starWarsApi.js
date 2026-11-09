@@ -1,43 +1,55 @@
-const API = import.meta.env.VITE_API_URL;
+const API = import.meta.env.VITE_API_URL
 
 async function request(endpoint) {
-  const response = await fetch(`${API}${endpoint}`);
+  const response = await fetch(`${API}${endpoint}`)
 
   if (!response.ok) {
-    throw new Error(`Star Wars API: ${response.status}`);
+    throw new Error(`Star Wars API: ${response.status}`)
   }
 
-  return response.json();
+  return response.json()
 }
 
 export function getCharacters() {
-  return request(`/characters`);
+  return request(`/characters`)
 }
 
 export function getCharacter(id) {
-  return request(`/character/${id}`);
+  return request(`/character/${id}`)
 }
 
 export function getMovies() {
-  return request("/movies");
+  return request("/movies")
 }
 
 export function getPlanets() {
-  return request("/planets");
+  return request("/planets")
 }
 
 export function getSpecies() {
-  return request("/species");
+  return request("/species")
 }
 
 export function getStarships() {
-  return request("/starships");
+  return request("/starships")
 }
 
 export function getVehicles() {
-  return request("/vehicles");
+  return request("/vehicles")
 }
 
 export function getCreatures() {
-  return request("/creatures");
+  return request("/creatures")
+}
+
+export function getDroids() {
+  return request("/droids")
+}
+
+export function getLocations() {
+  return request("/locations")
+}
+
+export function getOrganizations() {
+  return request("/organizations")
 }

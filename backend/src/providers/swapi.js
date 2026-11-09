@@ -37,7 +37,3 @@ export async function getVehicles() {
 export async function getStarships() {
   return request("/starships")
 }
-
-export async function getCreatures() {
-  return request("/creatures")
-}
