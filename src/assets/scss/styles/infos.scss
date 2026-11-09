@@ -1,0 +1,10 @@
+@use "../variables.scss" as scss;
+
+.infos {
+  &__list {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    justify-items: center;
+    margin-bottom: 2rem;
+  }
+}

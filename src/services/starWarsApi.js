@@ -53,3 +53,7 @@ export function getLocations() {
 export function getOrganizations() {
   return request("/organizations")
 }
+
+export function getStats() {
+  return request("/stats")
+}

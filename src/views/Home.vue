@@ -18,6 +18,7 @@
       @open-organization="openOrganization"
       :organizations="featuredOrganizations"
     />
+    <Infos />
     <Modal
       :is-open="!!selectedItem"
       :selected-item="selectedItem"
@@ -53,6 +54,7 @@ import Creatures from "../components/home/Creatures.vue"
 import Droids from "../components/home/Droids.vue"
 import Locations from "../components/home/Locations.vue"
 import Organizations from "../components/home/Organizations.vue"
+import Infos from "../views/Infos.vue"
 
 const selectedItem = ref(null)
 const species = ref([])
