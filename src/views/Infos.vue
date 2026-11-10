@@ -3,8 +3,10 @@
     <ul class="infos__list">
       <li v-for="item in items" :key="item.key" class="infos__item">
         <component :is="item.icon" class="infos__icon" :size="32" />
-        <p>{{ stats[item.key] ?? "-" }}</p>
-        <p>{{ item.label }}</p>
+        <div class="infos__text">
+          <p>{{ stats[item.key] ?? "-" }}</p>
+          <p>{{ item.label }}</p>
+        </div>
       </li>
     </ul>
   </section>

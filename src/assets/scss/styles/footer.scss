@@ -1,0 +1,26 @@
+@use "../variables.scss" as *;
+
+.footer {
+    &__container {
+            display: flex;
+    align-items: center;
+    justify-content: space-around;
+    }
+
+    &__logo {
+        img {
+                width: 150px;
+    height: auto;
+        }
+    }
+
+    &__text {
+        line-height: 1.5;
+        color: $gray;
+    }
+
+    &__icons {
+        display: flex;
+        gap: 1rem;
+    }
+}

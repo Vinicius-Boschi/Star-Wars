@@ -1,10 +1,46 @@
-@use "../variables.scss" as scss;
+@use "../variables.scss" as *;
 
 .infos {
   &__list {
     display: grid;
-    grid-template-columns: repeat(10, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     justify-items: center;
     margin-bottom: 2rem;
+    padding: 0;
+    list-style-type: none;
+    border-top: 1px solid $light-gray;
+    border-bottom: 1px solid $light-gray;
+
+    @include tablet {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    padding: 1.5rem 1rem;
+    gap: 1rem;
+    line-height: 1.5;
+
+    svg {
+      color: $title;
+    }
+  }
+
+  &__text {
+    padding: 0.5rem 0 0;
+
+    p:first-child {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: $title;
+    }
+
+    p:last-child {
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
   }
 }

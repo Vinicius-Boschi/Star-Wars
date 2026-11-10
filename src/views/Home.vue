@@ -19,6 +19,7 @@
       :organizations="featuredOrganizations"
     />
     <Infos />
+    <Footer />
     <Modal
       :is-open="!!selectedItem"
       :selected-item="selectedItem"
@@ -55,6 +56,7 @@ import Droids from "../components/home/Droids.vue"
 import Locations from "../components/home/Locations.vue"
 import Organizations from "../components/home/Organizations.vue"
 import Infos from "../views/Infos.vue"
+import Footer from "../components/Footer.vue"
 
 const selectedItem = ref(null)
 const species = ref([])
