@@ -1,5 +1,5 @@
 <template>
-  <header class="header">
+  <header class="header" :class="{ 'header--scrolled': isScrolled }">
     <div class="header__container">
       <nav class="header__navbar">
         <div class="header__action">
@@ -17,7 +17,9 @@
         <div class="header__links-container">
           <ul class="header__list">
             <li class="header__links" v-for="item in items" :key="item.name">
-              <RouterLink class="animation" :to="item.route">{{ item.title }}</RouterLink>
+              <RouterLink class="animation" :to="item.route">{{
+                item.title
+              }}</RouterLink>
             </li>
           </ul>
         </div>
@@ -30,6 +32,23 @@
 </template>
 
 <script setup>
+import { ref, onMounted, onUnmounted } from "vue"
+
+const isScrolled = ref(false)
+
+const handleScroll = () => {
+  isScrolled.value = window.scrollY > 50
+}
+
+onMounted(() => {
+  window.addEventListener("scroll", handleScroll, { passive: true })
+  handleScroll()
+})
+
+onUnmounted(() => {
+  window.removeEventListener("scroll", handleScroll)
+})
+
 const items = [
   { name: "Home", title: "Home", route: "/" },
   { name: "Characters", title: "Characters", route: "/characters" },

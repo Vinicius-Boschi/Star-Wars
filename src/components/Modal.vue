@@ -5,7 +5,7 @@
         class="modal__content"
         role="dialog"
         aria-modal="true"
-        :aria-label="`Detalhes de ${selectedItem.title || selectedItem.name}`"
+        :aria-label="`Details of ${selectedItem.title || selectedItem.name}`"
       >
         <button
           class="modal__close"
@@ -34,7 +34,7 @@
         </span>
 
         <ul class="modal__info">
-          <!-- Personagens -->
+          <!-- Characters -->
           <template v-if="selectedItem.type === 'character'">
             <li v-if="selectedItem.height">
               <strong>Height:</strong> {{ selectedItem.height }}
@@ -53,7 +53,7 @@
             </li>
           </template>
 
-          <!-- Filmes -->
+          <!-- Movies -->
           <template v-else-if="selectedItem.type === 'movie'">
             <li v-if="selectedItem.release_date">
               <strong>Release Date:</strong> {{ selectedItem.release_date }}
@@ -68,7 +68,7 @@
             </li>
           </template>
 
-          <!-- Planetas -->
+          <!-- Planets -->
           <template v-else-if="selectedItem.type === 'planet'">
             <li v-if="selectedItem.climate">
               <strong>Weather:</strong> {{ selectedItem.climate }}
@@ -83,7 +83,7 @@
             </li>
           </template>
 
-          <!-- Espécies -->
+          <!-- Species -->
           <template v-else-if="selectedItem.type === 'species'">
             <li v-if="selectedItem.classification">
               <strong>Classification:</strong>
@@ -100,7 +100,7 @@
             </li>
           </template>
 
-          <!-- Naves -->
+          <!-- starships -->
           <template v-else-if="selectedItem.type === 'starship'">
             <li v-if="selectedItem.model">
               <strong>Model:</strong> {{ selectedItem.model }}
@@ -120,7 +120,7 @@
             </li>
           </template>
 
-          <!-- Veículos -->
+          <!-- Vehicles -->
           <template v-else-if="selectedItem.type === 'vehicle'">
             <li v-if="selectedItem.model">
               <strong>Model:</strong> {{ selectedItem.model }}

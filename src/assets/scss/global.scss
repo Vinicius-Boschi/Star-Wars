@@ -9,7 +9,7 @@
 @use "./styles/footer.scss" as *;
 
 body {
-  font-family: "Roboto", serif;
+  font-family: $universe, serif;
   background-color: $background;
   color: $white;
 }
