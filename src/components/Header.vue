@@ -4,7 +4,7 @@
       <nav class="header__navbar">
         <div class="header__action">
           <img
-            src="../assets/images/star-wars-logo.jpg"
+            src="../assets/images/star-wars-logo.png"
             alt="Logo Star Wars"
             class="header__logo"
           />

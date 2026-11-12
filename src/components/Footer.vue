@@ -2,7 +2,7 @@
   <footer class="footer">
     <div class="footer__container">
       <div class="footer__logo">
-        <img src="../assets/images/star-wars-logo.jpg" alt="logo" />
+        <img src="../assets/images/star-wars-logo.png" alt="logo" />
       </div>
       <div class="footer__text">
         <p>

@@ -2,7 +2,10 @@
 
 .cards {
   &__featured {
-    padding: 3rem 2rem;
+    width: min(1248px, calc(100% - 4rem));
+    margin: 0 auto;
+    padding: 3rem 0;
+    box-sizing: border-box;
   }
 
   &__heading {
@@ -149,7 +152,8 @@
     }
 
     &__featured {
-      padding: 2rem 1rem;
+      width: calc(100% - 2rem);
+      padding: 2rem 0;
     }
 
     &__grid {
