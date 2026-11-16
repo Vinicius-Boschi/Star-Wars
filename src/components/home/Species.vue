@@ -1,5 +1,5 @@
 <template>
-  <section ref="speciesSection" class="cards__featured">
+  <section ref="speciesSection" class="cards__featured cards__featured--page">
     <div class="cards__heading">
       <h2>Highlight Species</h2>
     </div>
@@ -25,10 +25,15 @@
               'cards__favorite--active': isFavorite(species.id, 'species'),
             }"
             type="button"
-            @click="toggleFavorite({
-              ...species,
-              image: species.image || NotFound,
-            }, 'species')"
+            @click="
+              toggleFavorite(
+                {
+                  ...species,
+                  image: species.image || NotFound,
+                },
+                'species',
+              )
+            "
           >
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path
@@ -40,7 +45,13 @@
 
         <div class="cards__content">
           <h2>{{ species.name }}</h2>
+          <p class="cards__meta">
+            <strong>Planet:</strong> {{ species.homeworld_name || " n/a" }}
+          </p>
 
+          <p class="cards__meta">
+            <strong>Language:</strong> {{ species.language }}
+          </p>
           <button
             type="button"
             class="cards__button"

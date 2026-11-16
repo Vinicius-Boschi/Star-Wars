@@ -1,5 +1,5 @@
 <template>
-  <section ref="charactersSection" class="cards__featured">
+  <section ref="charactersSection" class="cards__featured cards__featured--page">
     <div class="cards__heading">
       <h2>Highlight Characters</h2>
     </div>
@@ -44,8 +44,25 @@
         </div>
 
         <div class="cards__content">
-          <h2>{{ character.name }}</h2>
-
+          <h3>{{ character.name }}</h3>
+          <p
+            v-if="
+              character.species_name ||
+              character.gender ||
+              character.homeworld_name
+            "
+            class="cards__meta"
+          >
+            {{
+              [
+                character.species_name,
+                character.gender,
+                character.homeworld_name,
+              ]
+                .filter(Boolean)
+                .join(" · ")
+            }}
+          </p>
           <button
             type="button"
             class="cards__button"

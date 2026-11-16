@@ -1,5 +1,5 @@
 <template>
-  <section ref="planetsSection" class="cards__featured">
+  <section ref="planetsSection" class="cards__featured cards__featured--page">
     <div class="cards__heading">
       <h2>Highlight Planets</h2>
     </div>
@@ -37,6 +37,12 @@
 
         <div class="cards__content">
           <h2>{{ planet.name }}</h2>
+          <p class="cards__meta">
+            <strong>Population:</strong> {{ formatNumber(planet.population) }}
+          </p>
+          <p class="cards__meta">
+            <strong>Climate:</strong> {{ planet.climate }}
+          </p>
 
           <button
             type="button"
@@ -71,6 +77,12 @@ const props = defineProps({
 
 function openPlanet(planet) {
   emit("open-planet", planet)
+}
+
+function formatNumber(value) {
+  const number = Number(value)
+
+  return Number.isFinite(number) ? number.toLocaleString("en-US") : value
 }
 
 onMounted(() => {

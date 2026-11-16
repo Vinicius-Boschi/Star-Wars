@@ -1,5 +1,5 @@
 <template>
-  <section ref="vehiclesSection" class="cards__featured">
+  <section ref="vehiclesSection" class="cards__featured cards__featured--page">
     <div class="cards__heading">
       <h2>Highlight Vehicles</h2>
     </div>
@@ -46,6 +46,12 @@
         <div class="cards__content">
           <h2>{{ vehicle.name }}</h2>
 
+          <p class="cards__meta"><strong>Model:</strong> {{ vehicle.model }}</p>
+
+          <p class="cards__meta">
+            <strong>Cost:</strong> {{ formatNumber(vehicle.cost_in_credits) }}
+          </p>
+
           <button
             type="button"
             class="cards__button"
@@ -75,6 +81,12 @@ const props = defineProps({
     default: () => [],
   },
 })
+
+function formatNumber(value) {
+  const number = Number(value)
+
+  return Number.isFinite(number) ? number.toLocaleString("en-US") : value
+}
 
 // Modal
 function openVehicle(vehicle) {

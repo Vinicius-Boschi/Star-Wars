@@ -21,6 +21,7 @@ import {
   fromDatabank,
   indexByName,
   databankList,
+  cached,
 } from "./helpers.js"
 
 const databankSpecies = databankList(fetchDatabankSpecies)
@@ -57,13 +58,22 @@ function mergeWithDatabank(
   return [...merged, ...extras]
 }
 
+export const getPlanetNames = cached(
+  async () =>
+    new Map((await getPlanet()).map((planet) => [planet.id, planet.name])),
+)
+
 export async function getSpecie() {
-  const [swapi, databank] = await Promise.all([
+  const [swapi, databank, planetNames] = await Promise.all([
     getSpecies(),
     databankSpecies(),
+    getPlanetNames(),
   ])
 
-  return mergeWithDatabank(toList(swapi), databank)
+  return mergeWithDatabank(toList(swapi), databank).map((specie) => ({
+    ...specie,
+    homeworld_name: planetNames.get(extractIdFromUrl(specie.homeworld)) || null,
+  }))
 }
 
 export async function getPlanet() {

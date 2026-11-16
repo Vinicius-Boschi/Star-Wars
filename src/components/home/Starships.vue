@@ -1,5 +1,5 @@
 <template>
-  <section ref="starshipsSection" class="cards__featured">
+  <section ref="starshipsSection" class="cards__featured cards__featured--page">
     <div class="cards__heading">
       <h2>Highlight Starships</h2>
     </div>
@@ -25,10 +25,15 @@
               'cards__favorite--active': isFavorite(starship.id, 'starship'),
             }"
             type="button"
-            @click="toggleFavorite({
-              ...starship,
-              image: starship.image || NotFound,
-            }, 'starship')"
+            @click="
+              toggleFavorite(
+                {
+                  ...starship,
+                  image: starship.image || NotFound,
+                },
+                'starship',
+              )
+            "
           >
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path
@@ -40,6 +45,14 @@
 
         <div class="cards__content">
           <h2>{{ starship.name }}</h2>
+
+          <p class="cards__meta">
+            <strong>Model:</strong> {{ starship.model }}
+          </p>
+
+          <p class="cards__meta">
+            <strong>Cost:</strong> {{ formatNumber(starship.cost_in_credits) }}
+          </p>
 
           <button
             type="button"
@@ -70,6 +83,12 @@ const props = defineProps({
     default: () => [],
   },
 })
+
+function formatNumber(value) {
+  const number = Number(value)
+
+  return Number.isFinite(number) ? number.toLocaleString("en-US") : value
+}
 
 // Modal
 function openStarship(starship) {

@@ -1,6 +1,7 @@
 import { getPeople, getPerson } from "../providers/swapi.js"
 import { getCharacters as fetchDatabankCharacters } from "../providers/databank.js"
 import { getAkababCharacters } from "../providers/akabab.js"
+import { getPlanet, getSpecie } from "./catalog.js"
 import {
   toList,
   extractIdFromUrl,
@@ -40,6 +41,8 @@ const emptySwapiFields = () => ({
   birth_year: null,
   gender: null,
   homeworld: null,
+  homeworld_name: null,
+  species_name: null,
   films: [],
   species: [],
   vehicles: [],
@@ -85,6 +88,16 @@ const getAkababIndex = cached(async () =>
   indexByName(await getAkababCharacters()),
 )
 
+const getPlanetNames = cached(
+  async () =>
+    new Map((await getPlanet()).map((planet) => [planet.id, planet.name])),
+)
+
+const getSpecieNames = cached(
+  async () =>
+    new Map((await getSpecie()).map((specie) => [specie.id, specie.name])),
+)
+
 function findDatabankCharacter(name, entries) {
   const normalizedName = normalizeName(name)
 
@@ -113,18 +126,40 @@ function findDatabankCharacter(name, entries) {
   return best && bestScore >= 2 && !hasTie ? best : null
 }
 
-const enrich = (swapi, databankMatch, akababMatch) => ({
+const pretiffy = (value) => {
+  const text = Array.isArray(value) ? value[0] : value
+  if (!text || typeof text !== "string") return null
+
+  return text
+    .replace(/-/g, " ")
+    .replace(/\b\w/g, (letter) => letter.toUpperCase())
+}
+
+const resolveNames = (swapi, akababMatch, planetNames, specieNames) => ({
+  species_name:
+    specieNames.get(extractIdFromUrl(swapi.species[0])) ||
+    pretiffy(akababMatch?.species),
+  homeworld_name:
+    planetNames.get(extractIdFromUrl(swapi.homeworld)) ||
+    pretiffy(akababMatch?.homeworld),
+})
+
+const enrich = (swapi, databankMatch, akababMatch, names) => ({
   ...swapi,
+  ...names,
   image: akababMatch?.image || databankMatch?.image || null,
   description: databankMatch?.description || "",
 })
 
 export async function getCharacters() {
-  const [swapiData, databankEntries, akabab] = await Promise.all([
-    getPeople(),
-    getDatabankIndex(),
-    getAkababIndex(),
-  ])
+  const [swapiData, databankEntries, akabab, planetNames, specieNames] =
+    await Promise.all([
+      getPeople(),
+      getDatabankIndex(),
+      getAkababIndex(),
+      getPlanetNames(),
+      getSpecieNames(),
+    ])
 
   const usedIds = new Set()
 
@@ -135,7 +170,12 @@ export async function getCharacters() {
 
     if (databankMatch) usedIds.add(databankMatch._id)
 
-    return enrich(swapi, databankMatch, akababMatch)
+    return enrich(
+      swapi,
+      databankMatch,
+      akababMatch,
+      resolveNames(swapi, akababMatch, planetNames, specieNames),
+    )
   })
 
   const databankOnly = databankEntries
@@ -150,17 +190,22 @@ export async function getCharacters() {
 }
 
 export async function getCharacter(id) {
-  const [raw, databankEntries, akabab] = await Promise.all([
-    getPerson(id),
-    getDatabankIndex(),
-    getAkababIndex(),
-  ])
+  const [raw, databankEntries, akabab, planetNames, specieNames] =
+    await Promise.all([
+      getPerson(id),
+      getDatabankIndex(),
+      getAkababIndex(),
+      getPlanetNames(),
+      getSpecieNames(),
+    ])
 
   const swapi = normalizeSwapiCharacter(raw)
+  const akababMatch = akabab.get(normalizeName(swapi.name))
 
   return enrich(
     swapi,
     findDatabankCharacter(swapi.name, databankEntries),
-    akabab.get(normalizeName(swapi.name)),
+    akababMatch,
+    resolveNames(swapi, akababMatch, planetNames, specieNames),
   )
 }

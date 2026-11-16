@@ -1,5 +1,5 @@
 <template>
-  <section ref="moviesSection" class="cards__featured">
+  <section ref="moviesSection" class="cards__featured cards__featured--page">
     <div class="cards__heading">
       <h2>Highlight Movies</h2>
     </div>
@@ -37,6 +37,14 @@
 
         <div class="cards__content">
           <h2>{{ movie.title }}</h2>
+
+          <p class="cards__meta">
+            <strong>Director:</strong> {{ movie.director }}
+          </p>
+
+          <p class="cards__meta">
+            <strong>Date:</strong> {{ movie.release_date }}
+          </p>
 
           <button type="button" class="cards__button" @click="openMovie(movie)">
             See Details

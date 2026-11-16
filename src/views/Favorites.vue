@@ -1,5 +1,5 @@
 <template>
-  <section class="cards__featured">
+  <section class="cards__featured cards__featured--page">
     <div class="cards__heading">
       <h2>My Favorites</h2>
     </div>
