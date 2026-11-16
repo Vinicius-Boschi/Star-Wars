@@ -1,5 +1,5 @@
 <template>
-  <section ref="moviesSection" class="cards__featured cards__featured--page">
+  <section ref="moviesSection" class="cards__featured">
     <div class="cards__heading">
       <h2>Highlight Movies</h2>
     </div>

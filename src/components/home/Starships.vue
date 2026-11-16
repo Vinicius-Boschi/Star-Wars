@@ -1,5 +1,5 @@
 <template>
-  <section ref="starshipsSection" class="cards__featured cards__featured--page">
+  <section ref="starshipsSection" class="cards__featured">
     <div class="cards__heading">
       <h2>Highlight Starships</h2>
     </div>
