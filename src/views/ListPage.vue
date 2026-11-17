@@ -1,6 +1,11 @@
 <template>
   <main v-if="config">
+    <p v-if="loading">Loading...</p>
+    <p v-else-if="error">
+      {{ error }}
+    </p>
     <component
+      v-else
       :is="config.component"
       :[config.prop]="items"
       @[config.event]="open"
@@ -125,16 +130,27 @@ const config = computed(() => configs[props.type])
 const items = ref([])
 const selectedItem = ref(null)
 
+const loading = ref(true)
+const error = ref(null)
+
 function open(item) {
   selectedItem.value = { ...item, type: config.value.modalType }
 }
 
 onMounted(async () => {
   try {
+    if (!config.value) {
+      throw new Error("Category not found.")
+    }
+
     const data = await config.value.fetchData()
+
     items.value = Array.isArray(data) ? data : data.results || []
   } catch (err) {
     console.error(`Error loading ${props.type}:`, err)
+    error.value = "Unable to load content. Please try again."
+  } finally {
+    loading.value = false
   }
 })
 </script>

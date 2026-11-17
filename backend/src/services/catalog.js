@@ -24,6 +24,8 @@ import {
   cached,
 } from "./helpers.js"
 
+import content from "../data/content.json" with { type: "json" }
+
 const databankSpecies = databankList(fetchDatabankSpecies)
 const databankPlanets = databankList(fetchDatabankPlanets)
 const databankVehicles = databankList(fetchDatabankVehicles)
@@ -95,7 +97,18 @@ export async function getVehicle() {
 }
 
 export async function getMovies() {
-  return toList(await getFilms())
+  const films = toList(await getFilms())
+
+  return films.map((film) => {
+    const movie = content.movies.find(
+      (item) => Number(item.id) === Number(film.episode_id),
+    )
+    return {
+      ...film,
+      id: extractIdFromUrl(film.url),
+      image: movie?.image || null,
+    }
+  })
 }
 
 export async function getStarship() {

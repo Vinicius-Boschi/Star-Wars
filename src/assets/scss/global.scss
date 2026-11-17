@@ -17,3 +17,20 @@ body {
 main {
   padding-top: 110px !important;
 }
+
+/* Largura da barra */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+/* Fundo da barra */
+::-webkit-scrollbar-track {
+  background: $background;
+}
+
+/* Parte que se movimenta */
+::-webkit-scrollbar-thumb {
+  background: $gray;
+  border-radius: 10px;
+}

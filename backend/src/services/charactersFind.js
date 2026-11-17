@@ -1,7 +1,7 @@
 import { getPeople, getPerson } from "../providers/swapi.js"
 import { getCharacters as fetchDatabankCharacters } from "../providers/databank.js"
 import { getAkababCharacters } from "../providers/akabab.js"
-import { getPlanet, getSpecie } from "./catalog.js"
+import { getPlanet, getSpecie, getMovies } from "./catalog.js"
 import {
   toList,
   extractIdFromUrl,
@@ -49,6 +49,21 @@ const emptySwapiFields = () => ({
   starships: [],
 })
 
+const toArray = (value) => {
+  if (!value) return []
+  return Array.isArray(value) ? value : [value]
+}
+
+const hasValue = (value) =>
+  value !== null &&
+  value !== undefined &&
+  String(value).trim() !== "" &&
+  !["unknown", "n/a", "none", "null"].includes(
+    String(value).trim().toLowerCase(),
+  )
+
+const firstValid = (...values) => values.find(hasValue) ?? null
+
 function normalizeSwapiCharacter(character) {
   return {
     id: extractIdFromUrl(character.url),
@@ -61,10 +76,10 @@ function normalizeSwapiCharacter(character) {
     birth_year: character.birth_year,
     gender: character.gender,
     homeworld: character.homeworld,
-    films: character.films || [],
-    species: character.species || [],
-    vehicles: character.vehicles || [],
-    starships: character.starships || [],
+    films: toArray(character.films),
+    species: toArray(character.species),
+    vehicles: toArray(character.vehicles),
+    starships: toArray(character.starships),
   }
 }
 
@@ -73,8 +88,16 @@ const significantWords = (name) =>
 
 function prepareDatabank(characters) {
   return characters.map((character) => {
-    const name = normalizeName(character.name)
-    return { character, name, words: significantWords(name) }
+    const aliases = character.name
+      .split("/")
+      .map((name) => normalizeName(name.trim()))
+
+    return {
+      character,
+      name: normalizeName(character.name),
+      aliases,
+      words: significantWords(normalizeName(character.name)),
+    }
   })
 }
 
@@ -98,14 +121,32 @@ const getSpecieNames = cached(
     new Map((await getSpecie()).map((specie) => [specie.id, specie.name])),
 )
 
+const getMoviesList = cached(async () => getMovies())
+
 function findDatabankCharacter(name, entries) {
   const normalizedName = normalizeName(name)
 
-  const exact = entries.find((entry) => entry.name === normalizedName)
-  if (exact) return exact.character
+  const exact = entries.filter((entry) =>
+    entry.aliases.includes(normalizedName),
+  )
+
+  if (exact.length === 1) return exact[0].character
+  if (exact.length > 1) return null
 
   const nameWords = significantWords(normalizedName)
+
   if (!nameWords.length) return null
+
+  if (nameWords.length === 1) {
+    const aliasMatches = entries.filter((entry) =>
+      entry.aliases.some((alias) =>
+        significantWords(alias).includes(nameWords[0]),
+      ),
+    )
+
+    if (aliasMatches.length === 1) return aliasMatches[0].character
+    if (aliasMatches.length > 1) return null
+  }
 
   let best = null
   let bestScore = 0
@@ -126,8 +167,9 @@ function findDatabankCharacter(name, entries) {
   return best && bestScore >= 2 && !hasTie ? best : null
 }
 
-const pretiffy = (value) => {
+const prettify = (value) => {
   const text = Array.isArray(value) ? value[0] : value
+
   if (!text || typeof text !== "string") return null
 
   return text
@@ -138,43 +180,185 @@ const pretiffy = (value) => {
 const resolveNames = (swapi, akababMatch, planetNames, specieNames) => ({
   species_name:
     specieNames.get(extractIdFromUrl(swapi.species[0])) ||
-    pretiffy(akababMatch?.species),
+    prettify(akababMatch?.species),
+
   homeworld_name:
     planetNames.get(extractIdFromUrl(swapi.homeworld)) ||
-    pretiffy(akababMatch?.homeworld),
+    prettify(akababMatch?.homeworld),
 })
 
-const enrich = (swapi, databankMatch, akababMatch, names) => ({
+const related_aliases = new Map([
+  ["ben solo", "kylo ren"],
+  ["kylo ren", "supreme leader kylo ren"],
+  ["darth sidious", "palpatine"]
+])
+
+const findRelatedCharacters = (names, akabab, databankEntries) =>
+  toArray(names).map((name) => {
+    const cleanName = name.replace(/\s*\([^)]*\)/g, "").trim()
+    const normalizedName = normalizeName(cleanName)
+
+    const searchName = related_aliases.get(normalizedName) || normalizedName
+
+    const akababMatch = akabab.get(searchName)
+
+    const databankMatch = findDatabankCharacter(searchName, databankEntries)
+
+    return {
+      name: akababMatch?.name || databankMatch?.name || cleanName,
+      image: akababMatch?.image || databankMatch?.image || null,
+    }
+  })
+
+const findCharacterFilms = (films, movies) => {
+  return toArray(films)
+    .map((url) => {
+      const id = extractIdFromUrl(url)
+
+      if (!id) return null
+
+      const movie = movies.find(
+        (item) => Number(extractIdFromUrl(item.url)) === Number(id),
+      )
+
+      if (!movie) return null
+
+      return {
+        id: extractIdFromUrl(movie.url),
+        title: movie.title,
+        image: movie.image || null,
+      }
+    })
+    .filter(Boolean)
+}
+
+const enrich = (
+  swapi,
+  databankMatch,
+  akababMatch,
+  names,
+  akabab,
+  databankEntries,
+  movies,
+) => ({
   ...swapi,
   ...names,
+
   image: akababMatch?.image || databankMatch?.image || null,
   description: databankMatch?.description || "",
+
+  // Akabab
+  born: akababMatch?.born || null,
+  died: akababMatch?.died || null,
+  bornLocation: akababMatch?.bornLocation || null,
+  diedLocation: akababMatch?.diedLocation || null,
+
+  height: firstValid(swapi.height, akababMatch?.height),
+  mass: firstValid(swapi.mass, akababMatch?.mass),
+
+  hairColor: akababMatch?.hairColor || null,
+  eyeColor: akababMatch?.eyeColor || null,
+  skinColor: akababMatch?.skinColor || null,
+
+  cybernetics: toArray(akababMatch?.cybernetics),
+  affiliations: toArray(akababMatch?.affiliations),
+  formerAffiliations: toArray(akababMatch?.formerAffiliations),
+  masters: findRelatedCharacters(akababMatch?.masters, akabab, databankEntries),
+  apprentices: findRelatedCharacters(
+    akababMatch?.apprentices,
+    akabab,
+    databankEntries,
+  ),
+  films: findCharacterFilms(swapi.films, movies),
 })
 
+async function getOptionalData() {
+  const results = await Promise.allSettled([
+    getDatabankIndex(),
+    getAkababIndex(),
+    getPlanetNames(),
+    getSpecieNames(),
+    getMoviesList(),
+  ])
+
+  const [
+    databankResult,
+    akababResult,
+    planetsResult,
+    speciesResult,
+    moviesResult,
+  ] = results
+
+  if (databankResult.status === "rejected") {
+    console.error(
+      "Error to loading characters Databank:",
+      databankResult.reason,
+    )
+  }
+
+  if (akababResult.status === "rejected") {
+    console.error("Error to loading characters Akabab:", akababResult.reason)
+  }
+
+  if (planetsResult.status === "rejected") {
+    console.error("Error to loading planet names:", planetsResult.reason)
+  }
+
+  if (speciesResult.status === "rejected") {
+    console.error("Error to loading species names:", speciesResult.reason)
+  }
+
+  if (moviesResult.status === "rejected") {
+    console.error("Error loading movies:", moviesResult.reason)
+  }
+
+  return {
+    databankEntries:
+      databankResult.status === "fulfilled" ? databankResult.value : [],
+
+    akabab:
+      akababResult.status === "fulfilled" ? akababResult.value : new Map(),
+
+    planetNames:
+      planetsResult.status === "fulfilled" ? planetsResult.value : new Map(),
+
+    specieNames:
+      speciesResult.status === "fulfilled" ? speciesResult.value : new Map(),
+
+    movies: moviesResult.status === "fulfilled" ? moviesResult.value : [],
+  }
+}
+
 export async function getCharacters() {
-  const [swapiData, databankEntries, akabab, planetNames, specieNames] =
-    await Promise.all([
-      getPeople(),
-      getDatabankIndex(),
-      getAkababIndex(),
-      getPlanetNames(),
-      getSpecieNames(),
-    ])
+  const [swapiData, optionalData] = await Promise.all([
+    getPeople(),
+    getOptionalData(),
+  ])
+
+  const { databankEntries, akabab, planetNames, specieNames, movies } =
+    optionalData
 
   const usedIds = new Set()
 
   const merged = toList(swapiData).map((raw) => {
     const swapi = normalizeSwapiCharacter(raw)
+
     const databankMatch = findDatabankCharacter(swapi.name, databankEntries)
+
     const akababMatch = akabab.get(normalizeName(swapi.name))
 
-    if (databankMatch) usedIds.add(databankMatch._id)
+    if (databankMatch) {
+      usedIds.add(databankMatch._id)
+    }
 
     return enrich(
       swapi,
       databankMatch,
       akababMatch,
       resolveNames(swapi, akababMatch, planetNames, specieNames),
+      akabab,
+      databankEntries,
+      movies,
     )
   })
 
@@ -190,22 +374,26 @@ export async function getCharacters() {
 }
 
 export async function getCharacter(id) {
-  const [raw, databankEntries, akabab, planetNames, specieNames] =
-    await Promise.all([
-      getPerson(id),
-      getDatabankIndex(),
-      getAkababIndex(),
-      getPlanetNames(),
-      getSpecieNames(),
-    ])
+  const [raw, optionalData] = await Promise.all([
+    getPerson(id),
+    getOptionalData(),
+  ])
+
+  const { databankEntries, akabab, planetNames, specieNames, movies } =
+    optionalData
 
   const swapi = normalizeSwapiCharacter(raw)
+
   const akababMatch = akabab.get(normalizeName(swapi.name))
+  const databankMatch = findDatabankCharacter(swapi.name, databankEntries)
 
   return enrich(
     swapi,
-    findDatabankCharacter(swapi.name, databankEntries),
+    databankMatch,
     akababMatch,
     resolveNames(swapi, akababMatch, planetNames, specieNames),
+    akabab,
+    databankEntries,
+    movies,
   )
 }

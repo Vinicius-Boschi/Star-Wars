@@ -1,13 +1,23 @@
 const API = import.meta.env.VITE_API_URL
 
 async function request(endpoint) {
-  const response = await fetch(`${API}${endpoint}`)
+  let response
 
-  if (!response.ok) {
-    throw new Error(`Star Wars API: ${response.status}`)
+  try {
+    response = await fetch(`${API}${endpoint}`)
+  } catch {
+    throw new Error("Unable to connect to Star Wars API.")
   }
 
-  return response.json()
+  if (!response.ok) {
+    throw new Error(`Star Wars API: ${response.status} ${response.statusText}`)
+  }
+
+  try {
+    return await response.json()
+  } catch {
+    throw new Error("Invalid response from Star Wars API.")
+  }
 }
 
 export function getCharacters() {
