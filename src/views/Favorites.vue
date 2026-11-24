@@ -125,7 +125,7 @@ const apiByType = {
 }
 
 const favoriteItems = computed(() =>
-  favorites.value
+  [...favorites.value]
     .reverse()
     .map((favorite) => {
       const items = dataByType.value[favorite.type] || []
