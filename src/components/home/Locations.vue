@@ -2,6 +2,7 @@
   <section ref="locationsSection" class="cards__featured">
     <div class="cards__heading">
       <h2>Highlight Locations</h2>
+      <p v-if="showCount">{{ locations.length }} Locations</p>
     </div>
 
     <div id="locations" class="cards__grid">
@@ -74,6 +75,10 @@ const props = defineProps({
     type: Array,
     default: () => [],
   },
+    showCount: {
+    type: Boolean,
+    default: true,
+  }
 })
 
 // Modal

@@ -25,23 +25,35 @@ import {
 } from "./helpers.js"
 
 import content from "../data/content.json" with { type: "json" }
+import { withContentImage } from "./contentImage.js"
 
 const databankSpecies = databankList(fetchDatabankSpecies)
 const databankPlanets = databankList(fetchDatabankPlanets)
 const databankVehicles = databankList(fetchDatabankVehicles)
+
+const normalizeComparisonName = (name) =>
+  normalizeName(name).replace(/\s+/g, "")
 
 function mergeWithDatabank(
   swapiItems,
   databankItems,
   { keepDatabankOnly = false } = {},
 ) {
-  const byName = indexByName(databankItems)
-  const usedIds = new Set()
+  // Remove duplicados do próprio Databank
+  const uniqueDatabank = [
+    ...new Map(
+      databankItems.map((item) => [normalizeComparisonName(item.name), item]),
+    ).values(),
+  ]
+
+  const byName = indexByName(uniqueDatabank)
+  const usedNames = new Set()
 
   const merged = swapiItems.map((item) => {
-    const match = byName.get(normalizeName(item.name))
+    const normalizedName = normalizeComparisonName(item.name)
+    const match = byName.get(normalizedName)
 
-    if (match) usedIds.add(match._id)
+    if (match) usedNames.add(normalizedName)
 
     return {
       ...item,
@@ -53,8 +65,8 @@ function mergeWithDatabank(
 
   if (!keepDatabankOnly) return merged
 
-  const extras = databankItems
-    .filter((item) => !usedIds.has(item._id))
+  const extras = uniqueDatabank
+    .filter((item) => !usedNames.has(normalizeComparisonName(item.name)))
     .map(fromDatabank)
 
   return [...merged, ...extras]
@@ -65,60 +77,221 @@ export const getPlanetNames = cached(
     new Map((await getPlanet()).map((planet) => [planet.id, planet.name])),
 )
 
-export async function getSpecie() {
-  const [swapi, databank, planetNames] = await Promise.all([
-    getSpecies(),
-    databankSpecies(),
-    getPlanetNames(),
-  ])
+export async function getPlanet() {
+  const [{ enrichPlanetResidents }, swapi, databank, films] = await Promise.all(
+    [
+      import("./charactersFind.js"),
+      getPlanets(),
+      databankPlanets(),
+      getFilms(),
+    ],
+  )
 
-  return mergeWithDatabank(toList(swapi), databank).map((specie) => ({
-    ...specie,
-    homeworld_name: planetNames.get(extractIdFromUrl(specie.homeworld)) || null,
+  const planets = mergeWithDatabank(toList(swapi), databank)
+  const allFilms = toList(films)
+
+  const planetsWithCharacters = await enrichPlanetResidents(planets)
+
+  return planetsWithCharacters.map((planet) => ({
+    ...planet,
+
+    films: allFilms
+      .filter((film) =>
+        toList(film.planets).some(
+          (url) => Number(extractIdFromUrl(url)) === Number(planet.id),
+        ),
+      )
+      .map((film) => {
+        const movie = content.movies.find(
+          (item) => Number(item.id) === Number(film.episode_id),
+        )
+
+        return {
+          ...film,
+          id: extractIdFromUrl(film.url),
+          image: movie?.image || null,
+        }
+      }),
   }))
 }
 
-export async function getPlanet() {
-  const [swapi, databank] = await Promise.all([
-    getPlanets(),
-    databankPlanets(),
-  ])
+export async function getVehicle() {
+  const [{ enrichVehiclePilots }, swapi, databank, filmsData] =
+    await Promise.all([
+      import("./charactersFind.js"),
+      getVehicles(),
+      databankVehicles(),
+      getFilms(),
+    ])
 
-  return mergeWithDatabank(toList(swapi), databank)
+  const vehicles = mergeWithDatabank(toList(swapi), databank, {
+    keepDatabankOnly: true,
+  })
+
+  const films = toList(filmsData)
+
+  const vehiclesWithPilots = await enrichVehiclePilots(vehicles)
+
+  return vehiclesWithPilots.map((vehicle) => ({
+    ...vehicle,
+
+    films: films
+      .filter((film) =>
+        toList(film.vehicles).some(
+          (url) => Number(extractIdFromUrl(url)) === Number(vehicle.id),
+        ),
+      )
+      .map((film) => {
+        const movie = content.movies.find(
+          (item) => Number(item.id) === Number(film.episode_id),
+        )
+
+        return {
+          id: extractIdFromUrl(film.url),
+          title: film.title,
+          image: movie?.image || null,
+        }
+      }),
+  }))
 }
 
-export async function getVehicle() {
-  const [swapi, databank] = await Promise.all([
-    getVehicles(),
-    databankVehicles(),
-  ])
+function resolveRelations(urls, items) {
+  const itemsById = new Map(items.map((item) => [Number(item.id), item]))
 
-  return mergeWithDatabank(toList(swapi), databank, { keepDatabankOnly: true })
+  return toList(urls)
+    .map((url) => {
+      const id = extractIdFromUrl(url)
+
+      return itemsById.get(Number(id)) || null
+    })
+    .filter(Boolean)
 }
 
 export async function getMovies() {
   const films = toList(await getFilms())
 
-  return films.map((film) => {
+  const movies = films.map((film) => {
     const movie = content.movies.find(
       (item) => Number(item.id) === Number(film.episode_id),
     )
+
     return {
       ...film,
       id: extractIdFromUrl(film.url),
       image: movie?.image || null,
     }
   })
+
+  const [{ enrichMovieCharacters }, planets, species, vehicles, starships] =
+    await Promise.all([
+      import("./charactersFind.js"),
+      getPlanet(),
+      getSpecie(),
+      getVehicle(),
+      getStarship(),
+    ])
+
+  const moviesWithCharacters = await enrichMovieCharacters(movies)
+
+  return moviesWithCharacters.map((movie) => ({
+    ...movie,
+    planets: resolveRelations(
+      movie.planets,
+      withContentImage(planets, "planets"),
+    ),
+    starships: resolveRelations(movie.starships, starships),
+    vehicles: resolveRelations(movie.vehicles, vehicles),
+    species: resolveRelations(movie.species, species),
+  }))
 }
 
 export async function getStarship() {
-  const starships = toList(await getStarships())
+  const [{ enrichStarshipPilots }, starshipsData, filmsData] =
+    await Promise.all([
+      import("./charactersFind.js"),
+      getStarships(),
+      getFilms(),
+    ])
 
-  return starships.map((starship) => ({
+  const starships = toList(starshipsData)
+  const films = toList(filmsData)
+
+  const normalizedStarships = starships.map((starship) => ({
     ...starship,
     id: extractIdFromUrl(starship.url),
     image: null,
     description: "",
+  }))
+
+  const starshipsWithPilots = await enrichStarshipPilots(normalizedStarships)
+
+  return starshipsWithPilots.map((starship) => ({
+    ...starship,
+
+    films: films
+      .filter((film) =>
+        toList(film.starships).some(
+          (url) => Number(extractIdFromUrl(url)) === Number(starship.id),
+        ),
+      )
+      .map((film) => {
+        const movie = content.movies.find(
+          (item) => Number(item.id) === Number(film.episode_id),
+        )
+
+        return {
+          id: extractIdFromUrl(film.url),
+          title: film.title,
+          image: movie?.image || null,
+        }
+      }),
+  }))
+}
+
+export async function getSpecie() {
+  const [{ enrichSpeciesPeople }, swapiData, databank, planetNames, filmsData] =
+    await Promise.all([
+      import("./charactersFind.js"),
+      getSpecies(),
+      databankSpecies(),
+      getPlanetNames(),
+      getFilms(),
+    ])
+
+  const films = toList(filmsData)
+
+  const species = mergeWithDatabank(toList(swapiData), databank, {
+    keepDatabankOnly: true,
+  }).map((specie) => ({
+    ...specie,
+    id: specie.id ?? extractIdFromUrl(specie.url),
+    homeworld_name: specie.homeworld
+      ? planetNames.get(extractIdFromUrl(specie.homeworld)) || null
+      : null,
+  }))
+
+  const speciesWithPeople = await enrichSpeciesPeople(species)
+
+  return speciesWithPeople.map((specie) => ({
+    ...specie,
+
+    films: films
+      .filter((film) =>
+        toList(film.species).some(
+          (url) => Number(extractIdFromUrl(url)) === Number(specie.id),
+        ),
+      )
+      .map((film) => {
+        const movie = content.movies.find(
+          (item) => Number(item.id) === Number(film.episode_id),
+        )
+
+        return {
+          id: extractIdFromUrl(film.url),
+          title: film.title,
+          image: movie?.image || null,
+        }
+      }),
   }))
 }
 

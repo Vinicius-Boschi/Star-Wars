@@ -2,6 +2,7 @@
   <section ref="moviesSection" class="cards__featured">
     <div class="cards__heading">
       <h2>Highlight Movies</h2>
+      <p v-if="showCount">{{ movies.length }} Movies</p>
     </div>
 
     <div id="movies" class="cards__grid">
@@ -71,6 +72,10 @@ const props = defineProps({
     type: Array,
     default: () => [],
   },
+    showCount: {
+    type: Boolean,
+    default: true,
+  }
 })
 
 function openMovie(movie) {

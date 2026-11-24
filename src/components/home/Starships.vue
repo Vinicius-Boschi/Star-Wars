@@ -2,6 +2,7 @@
   <section ref="starshipsSection" class="cards__featured">
     <div class="cards__heading">
       <h2>Highlight Starships</h2>
+      <p v-if="showCount">{{ starships.length }} Starships</p>
     </div>
 
     <div id="starships" class="cards__grid">
@@ -82,6 +83,10 @@ const props = defineProps({
     type: Array,
     default: () => [],
   },
+    showCount: {
+    type: Boolean,
+    default: true,
+  }
 })
 
 function formatNumber(value) {

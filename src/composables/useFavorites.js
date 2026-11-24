@@ -17,11 +17,7 @@ function toggleFavorite(item, type) {
         !(String(favorite.id) === String(id) && favorite.type === type),
     )
   } else {
-    favorites.value.push({
-      ...item,
-      id,
-      type,
-    })
+    favorites.value.push({ id, type })
   }
 
   saveFavorites()
@@ -50,15 +46,19 @@ function loadFavorites() {
     const parsedFavorites = JSON.parse(savedFavorites)
 
     favorites.value = Array.isArray(parsedFavorites)
-      ? parsedFavorites.filter(
-          (item) =>
-            item &&
-            item.id !== null &&
-            item.id !== undefined &&
-            item.id !== "" &&
-            typeof item.type === "string",
-        )
+      ? parsedFavorites
+          .filter(
+            (item) =>
+              item &&
+              item.id !== null &&
+              item.id !== undefined &&
+              item.id !== "" &&
+              typeof item.type === "string",
+          )
+          .map(({ id, type }) => ({ id, type }))
       : []
+
+    saveFavorites()
   } catch (err) {
     console.error("Error to load favorites:", err)
     favorites.value = []

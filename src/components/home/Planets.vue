@@ -2,6 +2,7 @@
   <section ref="planetsSection" class="cards__featured">
     <div class="cards__heading">
       <h2>Highlight Planets</h2>
+      <p v-if="showCount">{{ planets.length }} Planets</p>
     </div>
 
     <div id="planets" class="cards__grid">
@@ -73,6 +74,10 @@ const props = defineProps({
     type: Array,
     default: () => [],
   },
+    showCount: {
+    type: Boolean,
+    default: true,
+  }
 })
 
 function openPlanet(planet) {

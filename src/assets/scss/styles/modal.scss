@@ -46,7 +46,7 @@
 
   &__image {
     width: 100%;
-    height: 300px;
+    height: 350px;
     object-fit: cover;
     object-position: top center;
     border-radius: 12px;
@@ -64,6 +64,7 @@
     display: block;
     margin-bottom: 1.5rem;
     color: $title;
+    text-transform: capitalize;
   }
 
   &__info {
@@ -89,18 +90,52 @@
     padding: 1.5rem 0;
     border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 
-    h3 {
-      margin: 0 0 0.75rem;
-      color: $title;
-      font-size: 1rem;
-      text-transform: uppercase;
+    &-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
     }
 
     p {
-      margin: 0;
+      margin: 1rem 0;
       color: $text;
       font-size: 0.9rem;
       line-height: 1.6;
+    }
+  }
+
+  h3 {
+    color: $title;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+
+  &__crawl {
+    white-space: pre-line;
+    line-height: 1.7;
+  }
+
+  &__navigation {
+    display: flex;
+    gap: 0.5rem;
+
+    button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 2rem;
+      height: 2rem;
+      border: 1px solid $light-gray;
+      border-radius: 50%;
+      background: transparent;
+      cursor: pointer;
+      font-size: 1.5rem;
+      color: inherit;
+
+      &:disabled {
+        color: $light-gray;
+      }
     }
   }
 
@@ -179,13 +214,12 @@
       flex-direction: column;
       align-items: center;
       gap: 1rem;
-      width: 100px;
       text-align: center;
 
       img {
         width: 100px;
-        height: 100px;
-        border-radius: 50%;
+        height: 120px;
+        border-radius: 25%;
         object-fit: cover;
         border: 2px solid $light-gray;
       }

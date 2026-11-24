@@ -190,7 +190,7 @@ const resolveNames = (swapi, akababMatch, planetNames, specieNames) => ({
 const related_aliases = new Map([
   ["ben solo", "kylo ren"],
   ["kylo ren", "supreme leader kylo ren"],
-  ["darth sidious", "palpatine"]
+  ["darth sidious", "palpatine"],
 ])
 
 const findRelatedCharacters = (names, akabab, databankEntries) =>
@@ -209,6 +209,160 @@ const findRelatedCharacters = (names, akabab, databankEntries) =>
       image: akababMatch?.image || databankMatch?.image || null,
     }
   })
+
+export async function enrichMovieCharacters(movies) {
+  const [peopleData, akabab, databankEntries] = await Promise.all([
+    getPeople(),
+    getAkababIndex(),
+    getDatabankIndex(),
+  ])
+
+  const people = toList(peopleData)
+  const peopleById = new Map(
+    people.map((person) => [extractIdFromUrl(person.url), person]),
+  )
+
+  return movies.map((movie) => ({
+    ...movie,
+
+    characters: toArray(movie.characters)
+      .map((url) => {
+        const id = extractIdFromUrl(url)
+        const person = peopleById.get(id)
+
+        if (!person) return null
+
+        const related = findRelatedCharacters(
+          [person.name],
+          akabab,
+          databankEntries,
+        )[0]
+
+        return {
+          id,
+          ...related,
+        }
+      })
+      .filter(Boolean),
+  }))
+}
+
+export async function enrichPlanetResidents(planets) {
+  const [peopleData, akabab, databankEntries] = await Promise.all([
+    getPeople(),
+    getAkababIndex(),
+    getDatabankIndex(),
+  ])
+
+  const people = toList(peopleData)
+
+  const peopleById = new Map(
+    people.map((person) => [Number(extractIdFromUrl(person.url)), person]),
+  )
+
+  return planets.map((planet) => ({
+    ...planet,
+
+    characters: toArray(planet.residents)
+      .map((url) => {
+        const id = Number(extractIdFromUrl(url))
+        const person = peopleById.get(id)
+
+        if (!person) return null
+
+        const related = findRelatedCharacters(
+          [person.name],
+          akabab,
+          databankEntries,
+        )[0]
+
+        return {
+          id,
+          ...related,
+        }
+      })
+      .filter(Boolean),
+  }))
+}
+
+export async function enrichPilots(item) {
+  const [peopleData, akabab, databankEntries] = await Promise.all([
+    getPeople(),
+    getAkababIndex(),
+    getDatabankIndex(),
+  ])
+
+  const people = toList(peopleData)
+
+  const peopleById = new Map(
+    people.map((person) => [Number(extractIdFromUrl(person.url)), person]),
+  )
+
+  return item.map((item) => ({
+    ...item,
+
+    pilots: toArray(item.pilots)
+      .map((url) => {
+        const id = Number(extractIdFromUrl(url))
+        const person = peopleById.get(id)
+
+        if (!person) return null
+
+        const related = findRelatedCharacters(
+          [person.name],
+          akabab,
+          databankEntries,
+        )[0]
+
+        return {
+          id,
+          ...related,
+        }
+      })
+      .filter(Boolean),
+  }))
+}
+
+export const enrichStarshipPilots = enrichPilots
+export const enrichVehiclePilots = enrichPilots
+
+export async function enrichSpeciesPeople(species) {
+  const [peopleData, akabab, databankEntries] = await Promise.all([
+    getPeople(),
+    getAkababIndex(),
+    getDatabankIndex(),
+  ])
+
+  const people = toList(peopleData)
+
+  const peopleById = new Map(
+    people.map((person) => [Number(extractIdFromUrl(person.url)), person]),
+  )
+
+  return species.map((specie) => ({
+    ...specie,
+
+    people: toArray(specie.people)
+      .map((url) => {
+        const id = Number(extractIdFromUrl(url))
+        const person = peopleById.get(id)
+
+        if (!person) return null
+
+        const related = findRelatedCharacters(
+          [person.name],
+          akabab,
+          databankEntries,
+        )[0]
+
+        return {
+          id,
+          ...related,
+        }
+      })
+      .filter(Boolean),
+  }))
+}
 
 const findCharacterFilms = (films, movies) => {
   return toArray(films)
