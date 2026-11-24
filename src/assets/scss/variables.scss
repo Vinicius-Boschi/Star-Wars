@@ -15,7 +15,7 @@ $text: #c4c8ce;
 $mobile: 560px;
 $tablet: 789px;
 $desktop: 1050px;
-$large-desktop: 1300px;
+$large-desktop: 1400px;
 
 @mixin mobile {
   @media (max-width: $mobile) {

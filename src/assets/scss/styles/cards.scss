@@ -74,7 +74,6 @@
     object-position: top center;
   }
 
-  // Favoritos
   &__favorite {
     position: absolute;
     top: 12px;
@@ -157,25 +156,32 @@
       opacity: 1;
     }
   }
+}
 
-  // Responsividade
-  @media (max-width: 768px) {
-    &__background {
-      height: 450px;
+
+@include large-desktop {
+  .cards {
+    &__grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 1.25rem;
+    }
+  }
+}
+
+@include desktop {
+  .cards {
+    &__featured {
+      width: calc(100% - 3rem);
     }
 
-    &__content {
-      padding: 2rem;
+    &__grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
+  }
+}
 
-    &__title {
-      font-size: 20px;
-
-      span {
-        font-size: 32px;
-      }
-    }
-
+@include tablet {
+  .cards {
     &__featured {
       width: calc(100% - 2rem);
       padding: 2rem 0;
@@ -190,54 +196,89 @@
       gap: 1rem;
     }
 
+    &__heading {
+      margin-bottom: 1.5rem;
+    }
+
     &__item {
       max-width: 100%;
     }
 
-    &__media {
-      height: 160px;
-    }
-  }
-
-  @media (max-width: 480px) {
-    &__background {
-      height: 400px;
+    &__favorite {
+      top: 8px;
+      right: 8px;
+      width: 36px;
+      height: 36px;
     }
 
     &__content {
-      padding: 1.5rem;
+      padding: 3rem 0.75rem 0.75rem;
 
-      p {
-        max-width: 260px;
-        font-size: 14px;
+      h3 {
+        font-size: 1rem;
       }
     }
+  }
+}
 
-    &__title {
-      font-size: 18px;
+@include mobile {
+  .cards {
+    &__featured {
+      width: calc(100% - 1.5rem);
+      padding: 1.5rem 0;
 
-      span {
-        width: 240px;
-        font-size: 28px;
+      &--page {
+        padding-top: 6rem;
       }
     }
 
     &__heading {
+      align-items: flex-start;
+      gap: 0.75rem;
+
       h2 {
         font-size: 16px;
+        padding-left: 8px;
       }
 
       a {
-        font-size: 13px;
+        font-size: 12px;
       }
     }
 
     &__grid {
-      grid-template-columns: 1fr;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.75rem;
     }
 
     &__item {
-      max-width: 300px;
+      border-radius: 10px;
+    }
+
+    &__favorite {
+      width: 32px;
+      height: 32px;
+
+      svg {
+        width: 19px;
+        height: 19px;
+      }
+    }
+
+    &__content {
+      padding: 2.5rem 0.6rem 0.6rem;
+
+      h3 {
+        font-size: 0.85rem;
+      }
+    }
+
+    &__meta {
+      font-size: 0.75rem;
+    }
+
+    &__button {
+      font-size: 12px;
     }
   }
 }

@@ -1,49 +1,68 @@
 <template>
-  <header class="header" :class="{ 'header--scrolled': isScrolled }">
+  <header
+    class="header"
+    :class="{ 'header--scrolled': isScrolled || isMenuOpen }"
+  >
     <div class="header__container">
       <nav class="header__navbar">
-        <div class="header__action">
-          <img
-            src="../assets/images/star-wars-logo.png"
-            alt="Logo Star Wars"
-            class="header__logo"
-          />
-          <button class="header__button">
+        <img
+          src="../assets/images/star-wars-logo.png"
+          alt="Logo Star Wars"
+          class="header__logo"
+        />
+
+        <div
+          class="header__links-container"
+          :class="{ 'header__links-container--open': isMenuOpen }"
+        >
+          <ul class="header__list">
+            <li class="header__links" v-for="item in items" :key="item.name">
+              <RouterLink
+                class="animation"
+                :to="item.route"
+                @click="isMenuOpen = false"
+              >
+                {{ item.title }}
+              </RouterLink>
+            </li>
+          </ul>
+        </div>
+
+        <div class="header__right">
+          <div class="header__search">
+            <input
+              v-model="searchQuery"
+              type="search"
+              class="header__input"
+              placeholder="Search..."
+              autocomplete="off"
+            />
+            <div v-if="searchQuery.trim()" class="header__results">
+              <button
+                v-for="item in searchResults"
+                :key="`${item.type} - ${item.id}`"
+                type="button"
+                class="header__result"
+                @click="openSearchResults(item)"
+              >
+                <span>{{ item.name || item.title }}</span>
+                <small>{{ item.category }}</small>
+              </button>
+              <p v-if="searchResults.length === 0">No results found.</p>
+            </div>
+          </div>
+
+          <button
+            class="header__button"
+            type="button"
+            :aria-expanded="isMenuOpen"
+            aria-label="Toggle navigation menu"
+            @click="isMenuOpen = !isMenuOpen"
+          >
             <div class="header__burguer burguer-slip">
               <div class="header__burguer-lines"></div>
             </div>
           </button>
-        </div>
-        <div class="header__links-container">
-          <ul class="header__list">
-            <li class="header__links" v-for="item in items" :key="item.name">
-              <RouterLink class="animation" :to="item.route">{{
-                item.title
-              }}</RouterLink>
-            </li>
-          </ul>
-        </div>
-        <div class="header__search">
-          <input
-            v-model="searchQuery"
-            type="search"
-            class="header__input"
-            placeholder="Search..."
-            autocomplete="off"
-          />
-          <div v-if="searchQuery.trim()" class="header__results">
-            <button
-              v-for="item in searchResults"
-              :key="`${item.type} - ${item.id}`"
-              type="button"
-              class="header__result"
-              @click="openSearchResults(item)"
-            >
-              <span>{{ item.name || item.title }}</span>
-              <small>{{ item.category }}</small>
-            </button>
-            <p v-if="searchResults.length === 0">No results found.</p>
-          </div>
         </div>
       </nav>
     </div>
@@ -76,6 +95,7 @@ const isScrolled = ref(false)
 const searchQuery = ref("")
 const allItems = ref([])
 const selectedItem = ref(null)
+const isMenuOpen = ref(false)
 
 const handleScroll = () => {
   isScrolled.value = window.scrollY > 50

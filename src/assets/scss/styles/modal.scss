@@ -232,27 +232,195 @@
   }
 }
 
-@include mobile {
-  .modal {
-    padding: 0.75rem;
 
+@include desktop {
+  .modal {
     &__content {
-      padding: 1.25rem;
+      width: min(800px, 100%);
     }
 
     &__header {
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(160px, 220px) 1fr;
+      gap: 1.5rem;
+    }
+
+    &__image {
+      height: 310px;
+    }
+  }
+}
+
+@include tablet {
+  .modal {
+    padding: 1rem;
+
+    &__content {
+      width: 100%;
+      max-height: 88vh;
+      padding: 1.5rem;
+    }
+
+    &__header {
+      grid-template-columns: minmax(140px, 190px) 1fr;
       gap: 1.25rem;
     }
 
     &__image {
-      height: 250px;
-      max-width: 220px;
-      margin: 0 auto;
+      height: 270px;
     }
 
     &__details h2 {
       font-size: 1.4rem;
+    }
+
+    &__info {
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+    }
+
+    &__appearances {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+
+      li {
+        gap: 0.4rem;
+        padding: 0.5rem 0.25rem;
+
+        strong {
+          font-size: 1rem;
+        }
+
+        span {
+          font-size: 0.7rem;
+        }
+      }
+    }
+
+    &__related {
+      gap: 1.25rem;
+
+      &-card img {
+        width: 85px;
+        height: 100px;
+      }
+    }
+  }
+}
+
+@include mobile {
+  .modal {
+    padding: 0.5rem;
+
+    &__content {
+      max-height: 92vh;
+      padding: 1rem;
+      border-radius: 12px;
+    }
+
+    &__close {
+      top: 8px;
+      right: 12px;
+      font-size: 26px;
+    }
+
+    &__header {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      padding-bottom: 1rem;
+    }
+
+    &__image {
+      width: 100%;
+      max-width: 190px;
+      height: 230px;
+      margin: 0 auto;
+    }
+
+    &__details {
+      h2 {
+        padding-right: 1.5rem;
+        font-size: 1.25rem;
+      }
+    }
+
+    &__type {
+      margin-bottom: 1rem;
+      font-size: 0.85rem;
+    }
+
+    &__info {
+      grid-template-columns: 1fr;
+      gap: 0.65rem;
+
+      li {
+        font-size: 0.8rem;
+      }
+    }
+
+    &__section {
+      padding: 1rem 0;
+
+      p {
+        font-size: 0.8rem;
+      }
+    }
+
+    h3 {
+      font-size: 0.9rem;
+    }
+
+    &__appearances {
+      grid-template-columns: 1fr;
+
+      li {
+        justify-content: flex-start;
+        border-right: none;
+        border-bottom: 1px solid $gray;
+        padding: 0.65rem 0;
+
+        &:last-child {
+          border-bottom: none;
+        }
+      }
+    }
+
+    &__films {
+      gap: 0.75rem;
+
+      &-card {
+        flex-basis: 100px;
+
+        img {
+          width: 100px;
+          height: 145px;
+        }
+
+        span {
+          font-size: 0.75rem;
+        }
+      }
+    }
+
+    &__related {
+      gap: 1rem;
+
+      &-card {
+        gap: 0.5rem;
+
+        img {
+          width: 70px;
+          height: 85px;
+        }
+
+        span {
+          font-size: 0.75rem;
+        }
+      }
+    }
+
+    &__navigation button {
+      width: 1.8rem;
+      height: 1.8rem;
+      font-size: 1.25rem;
     }
   }
 }
